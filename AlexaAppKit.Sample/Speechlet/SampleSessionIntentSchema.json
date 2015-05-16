@@ -1,0 +1,17 @@
+{
+  "intents": [
+    {
+      "intent": "MyNameIsIntent",
+      "slots": [
+        {
+          "name": "Name",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "WhatsMyNameIntent",
+      "slots": []
+    }
+  ]
+}

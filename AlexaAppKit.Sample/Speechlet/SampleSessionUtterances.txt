@@ -1,0 +1,7 @@
+MyNameIsIntent  my name is {john|Name}
+MyNameIsIntent  my name is {sam brown|Name}
+WhatsMyNameIntent whats my name
+WhatsMyNameIntent what is my name
+WhatsMyNameIntent say my name
+WhatsMyNameIntent tell me my name
+WhatsMyNameIntent tell me what my name is

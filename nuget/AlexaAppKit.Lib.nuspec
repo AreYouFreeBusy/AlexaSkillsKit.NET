@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AlexaAppKit.NET</id>
+    <version>1.0.0</version>
+    <title>AlexaAppKit.NET</title>
+    <authors>Stefan Negritoiu (FreeBusy)</authors>
+    <owners>Stefan Negritoiu (FreeBusy)</owners>
+    <projectUrl>https://github.com/AreYouFreeBusy/AlexaAppKit.NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      .NET library to write Alexa App Speechlets that's interface-compatible with Amazon's Java AlexaAppKit
+    </description>
+    <releaseNotes>
+      Introducing AlexaAppKit.NET
+    </releaseNotes>
+    <copyright>Copyright 2015 Stefan Negritoiu (FreeBusy)</copyright>
+    <tags>amazon echo alexa speechlet</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.6" />
+      <dependency id="BouncyCastle" version="1.7.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\AlexaAppKit.Lib\bin\Release\AlexaAppKit.dll" target="lib\net45" /> 
+  </files> 
+</package>
