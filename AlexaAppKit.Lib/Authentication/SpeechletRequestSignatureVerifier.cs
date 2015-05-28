@@ -34,7 +34,8 @@ namespace AlexaAppKit.Authentication
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
 
-                // download the cert if we don't have the in cache or 
+                // download the cert 
+                // if we don't have it in cache or
                 // if we have it but it's stale because the current request was signed with a newer cert
                 // (signaled by signature check fail with cached cert)
                 cert = RetrieveAndVerifyCertificate(certChainUrl);
@@ -57,7 +58,8 @@ namespace AlexaAppKit.Authentication
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
 
-                // download the cert if we don't have the in cache or 
+                // download the cert 
+                // if we don't have it in cache or 
                 // if we have it but it's stale because the current request was signed with a newer cert
                 // (signaled by signature check fail with cached cert)
                 cert = await RetrieveAndVerifyCertificateAsync(certChainUrl);

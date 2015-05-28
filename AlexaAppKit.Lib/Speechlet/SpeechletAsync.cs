@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -18,19 +19,20 @@ namespace AlexaAppKit.Speechlet
         /// <summary>
         /// Processes Alexa request AND validates request signature
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="httpRequest"></param>
         /// <returns></returns>
-        public async virtual Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage request) {
-            if (!request.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER) ||
-                !request.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
+        public async virtual Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage httpRequest) {
+            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER) ||
+                !httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest); // Request signature absent
             }
 
-            string chainUrl = request.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First();
-            string signature = request.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First();
+            string chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First();
+            string signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First();
 
-            var alexaBytes = await request.Content.ReadAsByteArrayAsync();
-            if (!(await SpeechletRequestSignatureVerifier.VerifyRequestSignatureAsync(alexaBytes, signature, chainUrl))) { 
+            var alexaBytes = await httpRequest.Content.ReadAsByteArrayAsync();
+            Debug.WriteLine(httpRequest.ToLogString());
+            if (!(await SpeechletRequestSignatureVerifier.VerifyRequestSignatureAsync(alexaBytes, signature, chainUrl))) {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest); // Failed signature verification
             }
 
@@ -39,6 +41,8 @@ namespace AlexaAppKit.Speechlet
 
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
             httpResponse.Content = new StringContent(alexaResponse, Encoding.UTF8, "application/json");
+            Debug.WriteLine(httpResponse.ToLogString());
+            
             return httpResponse;
         }
 
