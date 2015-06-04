@@ -6,7 +6,8 @@ namespace AlexaAppKit.Speechlet
 {
     public class LaunchRequest : SpeechletRequest
     {
-        public LaunchRequest(string requestId) : base(requestId) {
+        public LaunchRequest(string requestId, DateTime timestamp) 
+            : base(requestId, timestamp) {
         }
     }
 }

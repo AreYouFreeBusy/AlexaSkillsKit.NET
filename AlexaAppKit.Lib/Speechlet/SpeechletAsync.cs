@@ -38,11 +38,20 @@ namespace AlexaAppKit.Speechlet
 
             var alexaContent = UTF8Encoding.UTF8.GetString(alexaBytes);
             string alexaResponse = await ProcessRequestAsync(alexaContent);
-
-            var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
-            httpResponse.Content = new StringContent(alexaResponse, Encoding.UTF8, "application/json");
-            Debug.WriteLine(httpResponse.ToLogString());
             
+            HttpResponseMessage httpResponse;
+            if (alexaResponse == null) {
+                httpResponse = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+            else if (alexaResponse == String.Empty) {
+                httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
+            else {
+                httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
+                httpResponse.Content = new StringContent(alexaResponse, Encoding.UTF8, "application/json");
+                Debug.WriteLine(httpResponse.ToLogString());
+            }
+
             return httpResponse;
         }
 
@@ -75,33 +84,74 @@ namespace AlexaAppKit.Speechlet
         /// <param name="requestContent"></param>
         /// <returns></returns>
         public async virtual Task<string> DoProcessRequestAsync(SpeechletRequestEnvelope requestEnvelope) {
+            Session session = requestEnvelope.Session;
             SpeechletResponse response = null;
+
+            // verify timestamp is within tolerance
+            var diff = DateTime.UtcNow - requestEnvelope.Request.Timestamp;
+            Debug.WriteLine("Request was timestamped {0:0.00} seconds ago.", diff.TotalSeconds);
+            if (Math.Abs((decimal)diff.TotalSeconds) > Sdk.TIMESTAMP_TOLERANCE_SEC) {
+                return String.Empty;
+            }
+
+            // process launch request
             if (requestEnvelope.Request is LaunchRequest) {
+                var request = requestEnvelope.Request as LaunchRequest;
                 if (requestEnvelope.Session.IsNew) {
                     await OnSessionStartedAsync(
-                        new SessionStartedRequest(requestEnvelope.Request.RequestId),
-                        requestEnvelope.Session);
+                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
                 }
-                response = await OnLaunchAsync(requestEnvelope.Request as LaunchRequest, requestEnvelope.Session);
+                response = await OnLaunchAsync(request, session);
             }
+
+            // process intent request
             else if (requestEnvelope.Request is IntentRequest) {
+                var request = requestEnvelope.Request as IntentRequest;
+
                 if (requestEnvelope.Session.IsNew) {
                     await OnSessionStartedAsync(
-                        new SessionStartedRequest(requestEnvelope.Request.RequestId),
-                        requestEnvelope.Session);
+                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
                 }
-                response = await OnIntentAsync(requestEnvelope.Request as IntentRequest, requestEnvelope.Session);
+                response = await OnIntentAsync(request, session);
             }
+
+            // process session ended request
             else if (requestEnvelope.Request is SessionEndedRequest) {
-                await OnSessionEndedAsync(requestEnvelope.Request as SessionEndedRequest, requestEnvelope.Session);
+                var request = requestEnvelope.Request as SessionEndedRequest;
+                await OnSessionEndedAsync(request, session);
             }
 
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
                 Response = response,
-                SessionAttributes = requestEnvelope.Session.Attributes
+                SessionAttributes = session.Attributes
             };
             return responseEnvelope.ToJson();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void DoSessionManagement(IntentRequest request, Session session) {
+            if (session.IsNew) {
+                session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
+            }
+            else {
+                // if the session was started as a result of a launch request 
+                // a first intent isn't yet set, so set it to the current intent
+                if (!session.Attributes.ContainsKey(Session.INTENT_SEQUENCE)) {
+                    session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
+                }
+                else {
+                    session.Attributes[Session.INTENT_SEQUENCE] += Session.SEPARATOR + request.Intent.Name;
+                }
+            }
+
+            // Auto-session management: copy all slot values from current intent into session
+            foreach (var slot in request.Intent.Slots.Values) {
+                if (!String.IsNullOrEmpty(slot.Value)) session.Attributes[slot.Name] = slot.Value;
+            }
         }
 
 

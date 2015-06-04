@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,18 +18,19 @@ namespace AlexaAppKit.Speechlet
         /// <summary>
         /// Processes Alexa request AND validates request signature
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="httpRequest"></param>
         /// <returns></returns>
-        public virtual HttpResponseMessage GetResponse(HttpRequestMessage request) {
-            if (!request.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER) ||
-                !request.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
+        public virtual HttpResponseMessage GetResponse(HttpRequestMessage httpRequest) {
+            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER) ||
+                !httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest); // Request signature absent
             }
 
-            string chainUrl = request.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First();
-            string signature = request.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First();
+            string chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First();
+            string signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First();
 
-            var alexaBytes = AsyncHelpers.RunSync<byte[]>(() => request.Content.ReadAsByteArrayAsync());
+            var alexaBytes = AsyncHelpers.RunSync<byte[]>(() => httpRequest.Content.ReadAsByteArrayAsync());
+            Debug.WriteLine(httpRequest.ToLogString());
             if (!SpeechletRequestSignatureVerifier.VerifyRequestSignature(alexaBytes, signature, chainUrl)) {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest); // Failed signature verification
             }
@@ -36,8 +38,19 @@ namespace AlexaAppKit.Speechlet
             var alexaContent = UTF8Encoding.UTF8.GetString(alexaBytes);
             string alexaResponse = ProcessRequest(alexaContent);
 
-            var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
-            httpResponse.Content = new StringContent(alexaResponse, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse;
+            if (alexaResponse == null) {
+                httpResponse = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+            else if (alexaResponse == String.Empty) {
+                httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
+            else {
+                httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
+                httpResponse.Content = new StringContent(alexaResponse, Encoding.UTF8, "application/json");
+                Debug.WriteLine(httpResponse.ToLogString());
+            }
+
             return httpResponse;
         }
 
@@ -70,25 +83,41 @@ namespace AlexaAppKit.Speechlet
         /// <param name="requestEnvelope"></param>
         /// <returns></returns>
         private string DoProcessRequest(SpeechletRequestEnvelope requestEnvelope) {
+            Session session = requestEnvelope.Session;
             SpeechletResponse response = null;
+
+            // verify timestamp is within tolerance
+            var diff = DateTime.UtcNow - requestEnvelope.Request.Timestamp;
+            Debug.WriteLine("Request was timestamped {0:0.00} seconds ago.", diff.TotalSeconds);
+            if (Math.Abs((decimal)diff.TotalSeconds) > Sdk.TIMESTAMP_TOLERANCE_SEC) {
+                return String.Empty;
+            }
+
+            // process launch request
             if (requestEnvelope.Request is LaunchRequest) {
+                var request = requestEnvelope.Request as LaunchRequest;
                 if (requestEnvelope.Session.IsNew) {
                     OnSessionStarted(
-                        new SessionStartedRequest(requestEnvelope.Request.RequestId), 
-                        requestEnvelope.Session);
+                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
                 }
-                response = OnLaunch(requestEnvelope.Request as LaunchRequest, requestEnvelope.Session);
+                response = OnLaunch(request, session);
             }
+
+            // process intent request
             else if (requestEnvelope.Request is IntentRequest) {
+                var request = requestEnvelope.Request as IntentRequest;
+
                 if (requestEnvelope.Session.IsNew) {
                     OnSessionStarted(
-                        new SessionStartedRequest(requestEnvelope.Request.RequestId), 
-                        requestEnvelope.Session);
+                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
                 }
-                response = OnIntent(requestEnvelope.Request as IntentRequest, requestEnvelope.Session);
+                response = OnIntent(request, session);
             }
+
+            // process session ended request
             else if (requestEnvelope.Request is SessionEndedRequest) {
-                OnSessionEnded(requestEnvelope.Request as SessionEndedRequest, requestEnvelope.Session);
+                var request = requestEnvelope.Request as SessionEndedRequest;
+                OnSessionEnded(request, session);
             }
 
             var responseEnvelope = new SpeechletResponseEnvelope {

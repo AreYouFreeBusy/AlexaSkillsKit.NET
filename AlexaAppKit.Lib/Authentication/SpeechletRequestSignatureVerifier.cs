@@ -1,8 +1,10 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Caching;
@@ -77,7 +79,7 @@ namespace AlexaAppKit.Authentication
         /// </summary>
         public static X509Certificate RetrieveAndVerifyCertificate(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
-            // so restrict host to an Alexa controlled subdomain/path (which Amazon should supply)
+            // so restrict host to an Alexa controlled subdomain/path
             if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
 
             var webClient = new WebClient();
@@ -87,6 +89,7 @@ namespace AlexaAppKit.Authentication
             var cert = (X509Certificate)pemReader.ReadObject();
             try {
                 cert.CheckValidity();
+                if (!CheckCertSubjectNames(cert)) return null;
             }
             catch (CertificateExpiredException) {
                 return null;
@@ -104,7 +107,7 @@ namespace AlexaAppKit.Authentication
         /// </summary>
         public async static Task<X509Certificate> RetrieveAndVerifyCertificateAsync(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
-            // so restrict host to an Alexa controlled subdomain/path (which Amazon should supply)
+            // so restrict host to an Alexa controlled subdomain/path
             if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
 
             var httpClient = new HttpClient();
@@ -115,7 +118,8 @@ namespace AlexaAppKit.Authentication
             var pemReader = new Org.BouncyCastle.OpenSsl.PemReader(new StringReader(content));
             var cert = (X509Certificate)pemReader.ReadObject();
             try {
-                cert.CheckValidity();
+                cert.CheckValidity(); 
+                if (!CheckCertSubjectNames(cert)) return null;
             }
             catch (CertificateExpiredException) {
                 return null;
@@ -142,6 +146,26 @@ namespace AlexaAppKit.Authentication
             signer.BlockUpdate(serializedSpeechletRequest, 0, serializedSpeechletRequest.Length);            
 
             return signer.VerifySignature(expectedSig);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static bool CheckCertSubjectNames(X509Certificate cert) {
+            bool found = false;
+            ArrayList subjectNamesList = (ArrayList)cert.GetSubjectAlternativeNames();
+            for (int i=0; i < subjectNamesList.Count; i++) {
+                ArrayList subjectNames = (ArrayList)subjectNamesList[i];
+                for (int j = 0; j < subjectNames.Count; j++) {
+                    if (subjectNames[j] is String && subjectNames[j].Equals(Sdk.ECHO_API_DOMAIN_NAME)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            return found;
         }
     }
 }

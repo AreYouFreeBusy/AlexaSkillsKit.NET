@@ -7,11 +7,17 @@ namespace AlexaAppKit.Speechlet
 {
     public abstract class SpeechletRequest
     {
-        public SpeechletRequest(string requestId) {
+        public SpeechletRequest(string requestId, DateTime timestamp) {
             RequestId = requestId;
+            Timestamp = timestamp;
         }
 
         public string RequestId {
+            get;
+            private set;
+        }
+
+        public DateTime Timestamp {
             get;
             private set;
         }

@@ -7,7 +7,9 @@ namespace AlexaAppKit.Speechlet
 {
     public class IntentRequest : SpeechletRequest
     {
-        public IntentRequest(string requestId, Intent intent)  : base(requestId) {
+        public IntentRequest(string requestId, DateTime timestamp, Intent intent)  
+            : base(requestId, timestamp) {
+
             Intent = intent;
         }
 

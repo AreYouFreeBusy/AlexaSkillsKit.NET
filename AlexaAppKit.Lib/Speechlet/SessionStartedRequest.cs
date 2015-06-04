@@ -7,7 +7,8 @@ namespace AlexaAppKit.Speechlet
 {
     public class SessionStartedRequest : SpeechletRequest
     {
-        public SessionStartedRequest(string requestId) : base(requestId) {
+        public SessionStartedRequest(string requestId, DateTime timestamp) 
+            : base(requestId, timestamp) {
         }
     }
 }
