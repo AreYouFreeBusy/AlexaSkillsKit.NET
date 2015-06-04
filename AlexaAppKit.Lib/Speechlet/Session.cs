@@ -8,6 +8,9 @@ namespace AlexaAppKit.Speechlet
 {
     public class Session
     {
+        public const string INTENT_SEQUENCE = "intentSequence";
+        public const string SEPARATOR = ";";
+
         /// <summary>
         /// 
         /// </summary>
@@ -53,6 +56,15 @@ namespace AlexaAppKit.Speechlet
         public virtual Dictionary<string, string> Attributes {
             get;
             set;
+        }
+
+        public virtual string[] IntentSequence {
+            get {
+                return String.IsNullOrEmpty(Attributes[INTENT_SEQUENCE]) ?
+                    new string[0] : 
+                    Attributes[INTENT_SEQUENCE].Split(
+                        new string[1] { SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+            }
         }
     }
 }

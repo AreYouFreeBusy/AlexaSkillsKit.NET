@@ -107,6 +107,10 @@ namespace AlexaAppKit.Speechlet
             else if (requestEnvelope.Request is IntentRequest) {
                 var request = requestEnvelope.Request as IntentRequest;
 
+                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
+                // to allow dev to change session values if behavior is not desired
+                DoSessionManagement(request, session);
+
                 if (requestEnvelope.Session.IsNew) {
                     OnSessionStarted(
                         new SessionStartedRequest(request.RequestId, request.Timestamp), session);
@@ -126,6 +130,31 @@ namespace AlexaAppKit.Speechlet
                 SessionAttributes = requestEnvelope.Session.Attributes
             };
             return responseEnvelope.ToJson();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void DoSessionManagement(IntentRequest request, Session session) {
+            if (session.IsNew) {
+                session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
+            }
+            else {
+                // if the session was started as a result of a launch request 
+                // a first intent isn't yet set, so set it to the current intent
+                if (!session.Attributes.ContainsKey(Session.INTENT_SEQUENCE)) {
+                    session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
+                }
+                else {
+                    session.Attributes[Session.INTENT_SEQUENCE] += Session.SEPARATOR + request.Intent.Name;
+                }
+            }
+
+            // Auto-session management: copy all slot values from current intent into session
+            foreach (var slot in request.Intent.Slots.Values) {
+                session.Attributes[slot.Name] = slot.Value;
+            }
         }
 
 

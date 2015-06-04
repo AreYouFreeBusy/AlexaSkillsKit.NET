@@ -108,6 +108,10 @@ namespace AlexaAppKit.Speechlet
             else if (requestEnvelope.Request is IntentRequest) {
                 var request = requestEnvelope.Request as IntentRequest;
 
+                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
+                // to allow dev to change session values if behavior is not desired
+                DoSessionManagement(request, session);
+
                 if (requestEnvelope.Session.IsNew) {
                     await OnSessionStartedAsync(
                         new SessionStartedRequest(request.RequestId, request.Timestamp), session);
