@@ -17,6 +17,11 @@ namespace AlexaAppKit.Speechlet
             set;
         }
 
+        public virtual Reprompt Reprompt {
+            get;
+            set;
+        }
+
         public virtual bool ShouldEndSession {
             get;
             set;

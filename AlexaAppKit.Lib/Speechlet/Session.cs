@@ -25,6 +25,7 @@ namespace AlexaAppKit.Speechlet
                 SessionId = json.Value<string>("sessionId"),
                 IsNew = json.Value<bool>("new"),
                 User = User.FromJson(json.Value<JObject>("user")),
+                Application = Application.FromJson(json.Value<JObject>("application")),
                 Attributes = attributes
             };
         }
@@ -35,6 +36,11 @@ namespace AlexaAppKit.Speechlet
         }
 
         public virtual bool IsNew {
+            get;
+            set;
+        }
+
+        public virtual Application Application {
             get;
             set;
         }
