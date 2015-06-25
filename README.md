@@ -1,10 +1,10 @@
 # AlexaSkillsKit.NET
-.NET library to write Alexa skills that's interface-compatible with Amazon's AlexaSkillsKit for Java.
+.NET library to write Alexa skills that's interface-compatible with Amazon's AlexaSkillsKit for Java and matches that functionality:
 * handles the (de)serialization of Alexa requests & responses into easy-to-use object models
-* verifies request signature and timestamp to ensure they are genuine Alexa requests
-* core-reviewed and vetted by Amazon (Alexa apps written using this library passed certification)
+* verifies authenticity of the request by validating its signature and timestamp
+* code-reviewed and vetted by Amazon (Alexa skills written using this library passed certification)
 
-Beyond Amazon's AlexaSkillsKit features, AlexaSkillsKit.NET:
+Beyond the functionality in Amazon's AlexaSkillsKit for Java, AlexaSkillsKit.NET:
 * performs automatic session management so you can easily [build conversational Alexa apps](https://freebusy.io/blog/building-conversational-alexa-apps-for-amazon-echo)
 
 
