@@ -1,5 +1,5 @@
 # AlexaSkillsKit.NET
-.NET library to write Alexa apps that's interface-compatible with Amazon's AlexaSkillsKit.
+.NET library to write Alexa skills that's interface-compatible with Amazon's AlexaSkillsKit for Java.
 * handles the (de)serialization of Alexa requests & responses into easy-to-use object models
 * verifies request signature and timestamp to ensure they are genuine Alexa requests
 * core-reviewed and vetted by Amazon (Alexa apps written using this library passed certification)
@@ -20,7 +20,7 @@ Read [Getting started with Alexa App development for Amazon Echo using .NET on W
 
 ### 2. Implement your app
 
-If your app does any kind of I/O and assuming you're building on top of .NET Framework 4.5 it's recommended that you derive your "Speechlet" from the abstract SpeechletAsync and implement these methods as defined by ISpeechletAsync
+If your Alexa skill does any kind of I/O and assuming you're building on top of .NET Framework 4.5 it's recommended that you derive your app from the abstract SpeechletAsync and implement these methods as defined by ISpeechletAsync
   
 ```csharp
 public interface ISpeechletAsync
@@ -32,7 +32,7 @@ public interface ISpeechletAsync
 }
 ```
   
-Or derive your "Speechlet" from the abstract Speechlet and implement these methods as defined by ISpeechlet.
+Or derive your app from the abstract Speechlet and implement these methods as defined by ISpeechlet.
   
 ```csharp
 public interface ISpeechlet
@@ -44,11 +44,11 @@ public interface ISpeechlet
 }
 ```
   
-Take a look at https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET/blob/master/AlexaAppKit.Sample/Speechlet/SampleSessionSpeechlet.cs for an example.
+Take a look at https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET/blob/master/AlexaSkillsKit.Sample/Speechlet/SampleSessionSpeechlet.cs for an example.
 
 ### 3. Wire-up "Speechlet" to HTTP hosting environment
 
-The Sample app is using ASP.NET 4.5 WebApi 2 so wiring-up requests & responses from the HTTP hosting environment (i.e. ASP.NET 4.5) to the "Speechlet" is just a matter of writing a 2-line ApiController like this https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET/blob/master/AlexaAppKit.Sample/Speechlet/AlexaController.cs 
+The Sample app is using ASP.NET 4.5 WebApi 2 so wiring-up requests & responses from the HTTP hosting environment (i.e. ASP.NET 4.5) to the "Speechlet" is just a matter of writing a 2-line ApiController like this https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET/blob/master/AlexaSkillsKit.Sample/Speechlet/AlexaController.cs 
   
 *Note: sample project is generated from the ASP.NET 4.5 WebApi 2 template so it includes a lot of functionality that's not directly related to Alexa Speechlets, but it does make make for a complete Web API project.*
 
