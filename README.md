@@ -18,7 +18,7 @@ This library is available as a NuGet package at https://www.nuget.org/packages/A
 
 Read [Getting started with Alexa App development for Amazon Echo using .NET on Windows](https://freebusy.io/blog/getting-started-with-alexa-app-development-for-amazon-echo-using-dot-net)
 
-### 2. Implement your app
+### 2. Implement your skill as a "Speechlet"
 
 If your Alexa skill does any kind of I/O and assuming you're building on top of .NET Framework 4.5 it's recommended that you derive your app from the abstract SpeechletAsync and implement these methods as defined by ISpeechletAsync
   
