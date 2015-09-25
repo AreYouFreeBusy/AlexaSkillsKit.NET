@@ -14,11 +14,17 @@ namespace AlexaSkillsKit.Speechlet
         /// <returns></returns>
         public static User FromJson(JObject json) {
             return new User {
-                Id = json.Value<string>("userId")
+                Id = json.Value<string>("userId"),
+                AccessToken = json.Value<string>("accessToken")
             };
         }
 
         public virtual string Id {
+            get;
+            set;
+        }
+
+        public virtual string AccessToken {
             get;
             set;
         }

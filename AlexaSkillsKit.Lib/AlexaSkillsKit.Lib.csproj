@@ -79,6 +79,7 @@
     <Compile Include="UI\Card.cs" />
     <Compile Include="UI\OutputSpeech.cs" />
     <Compile Include="UI\PlainTextOutputSpeech.cs" />
+    <Compile Include="UI\LinkAccountCard.cs" />
     <Compile Include="UI\SimpleCard.cs" />
   </ItemGroup>
   <ItemGroup>
