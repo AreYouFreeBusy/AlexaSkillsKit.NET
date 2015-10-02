@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AlexaSkillsKit.NET</id>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <title>AlexaSkillsKit.NET</title>
     <authors>Stefan Negritoiu (FreeBusy)</authors>
     <owners>Stefan Negritoiu (FreeBusy)</owners>
@@ -14,15 +14,13 @@
 .NET library that simplifies Alexa skills development; interface-compatible with Amazon's AlexaSkillsKit for Java
     </description>
     <releaseNotes>
-1.0.0: Introducing AlexaAppKit.NET
-1.1.0: Incorporated May 2015 Alexa SDK updates; Added session and conversation management
-1.2.0: Rename to AlexaSkillsKit.NET
+1.3.0: Incorporated Sept 2015 ASK update for account linking and access tokens
     </releaseNotes>
     <copyright>Copyright 2015 Stefan Negritoiu (FreeBusy)</copyright>
     <tags>amazon echo alexa speechlet</tags>
     <dependencies>
       <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
-      <dependency id="Newtonsoft.Json" version="6.0.8" />
+      <dependency id="Newtonsoft.Json" version="7.0.1" />
       <dependency id="BouncyCastle" version="1.7.0" />
     </dependencies>
   </metadata>
