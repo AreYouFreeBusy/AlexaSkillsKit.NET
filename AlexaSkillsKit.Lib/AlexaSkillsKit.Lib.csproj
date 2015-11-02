@@ -53,7 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncHelpers.cs" />
+    <Compile Include="Authentication\SpeechletRequestValidationResult.cs" />
     <Compile Include="Authentication\SpeechletRequestSignatureVerifier.cs" />
+    <Compile Include="Authentication\SpeechletRequestTimestampVerifier.cs" />
     <Compile Include="HttpHelpers.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />
     <Compile Include="Json\SpeechletResponseEnvelope.cs" />

@@ -22,29 +22,52 @@ namespace AlexaSkillsKit.Speechlet
         /// <param name="httpRequest"></param>
         /// <returns></returns>
         public async virtual Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage httpRequest) {
+            SpeechletRequestValidationResult validationResult = SpeechletRequestValidationResult.OK;
+            DateTime now = DateTime.UtcNow; // reference time for this request
+
+            string chainUrl = null;
             if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER) ||
-                !httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest); // Request signature absent
+                String.IsNullOrEmpty(chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First())) {
+                validationResult = validationResult | SpeechletRequestValidationResult.NoCertHeader;
             }
 
-            string chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First();
-            string signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First();
+            string signature = null;
+            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER) ||
+                String.IsNullOrEmpty(signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First())) {
+                validationResult = validationResult | SpeechletRequestValidationResult.NoSignatureHeader;
+            }
 
             var alexaBytes = await httpRequest.Content.ReadAsByteArrayAsync();
             Debug.WriteLine(httpRequest.ToLogString());
-            if (!(await SpeechletRequestSignatureVerifier.VerifyRequestSignatureAsync(alexaBytes, signature, chainUrl))) {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest); // Failed signature verification
+
+            // attempt to verify signature only if we were able to locate certificate and signature headers
+            if (validationResult == SpeechletRequestValidationResult.OK) {
+                if (!(await SpeechletRequestSignatureVerifier.VerifyRequestSignatureAsync(alexaBytes, signature, chainUrl))) {
+                    validationResult = validationResult | SpeechletRequestValidationResult.InvalidSignature;
+                }
             }
 
             var alexaContent = UTF8Encoding.UTF8.GetString(alexaBytes);
-            string alexaResponse = await ProcessRequestAsync(alexaContent);
+            var alexaRequest = SpeechletRequestEnvelope.FromJson(alexaContent);
+
+            // attempt to verify timestamp only if we were able to parse request body
+            if (alexaRequest != null) {
+                if (!SpeechletRequestTimestampVerifier.VerifyRequestTimestamp(alexaRequest, now)) {
+                    validationResult = validationResult | SpeechletRequestValidationResult.InvalidTimestamp;
+                }
+            }
+
+            if (!OnRequestValidation(validationResult, now, alexaRequest)) {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest) {
+                    ReasonPhrase = validationResult.ToString()
+                };
+            }
+
+            string alexaResponse = await DoProcessRequestAsync(alexaRequest);
             
             HttpResponseMessage httpResponse;
             if (alexaResponse == null) {
                 httpResponse = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-            }
-            else if (alexaResponse == String.Empty) {
-                httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
             else {
                 httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
@@ -81,18 +104,11 @@ namespace AlexaSkillsKit.Speechlet
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="requestContent"></param>
+        /// <param name="requestEnvelope"></param>
         /// <returns></returns>
-        public async virtual Task<string> DoProcessRequestAsync(SpeechletRequestEnvelope requestEnvelope) {
+        private async Task<string> DoProcessRequestAsync(SpeechletRequestEnvelope requestEnvelope) {
             Session session = requestEnvelope.Session;
             SpeechletResponse response = null;
-
-            // verify timestamp is within tolerance
-            var diff = DateTime.UtcNow - requestEnvelope.Request.Timestamp;
-            Debug.WriteLine("Request was timestamped {0:0.00} seconds ago.", diff.TotalSeconds);
-            if (Math.Abs((decimal)diff.TotalSeconds) > Sdk.TIMESTAMP_TOLERANCE_SEC) {
-                return String.Empty;
-            }
 
             // process launch request
             if (requestEnvelope.Request is LaunchRequest) {
@@ -156,6 +172,17 @@ namespace AlexaSkillsKit.Speechlet
             foreach (var slot in request.Intent.Slots.Values) {
                 if (!String.IsNullOrEmpty(slot.Value)) session.Attributes[slot.Name] = slot.Value;
             }
+        }
+
+
+        /// <summary>
+        /// Opportunity to set policy for handling requests with invalid signatures and/or timestamps
+        /// </summary>
+        /// <returns>true if request processing should continue, otherwise false</returns>
+        public virtual bool OnRequestValidation(
+            SpeechletRequestValidationResult result, DateTime referenceTimeUtc, SpeechletRequestEnvelope requestEnvelope) {
+            
+            return result == SpeechletRequestValidationResult.OK;
         }
 
 
