@@ -18,8 +18,9 @@ namespace AlexaSkillsKit.Speechlet
         /// <returns></returns>
         public static Session FromJson(JObject json) {
             var attributes = new Dictionary<string, string>();
-            if (json["attributes"] != null) {
-                foreach (var attrib in json.Value<JObject>("attributes").Children()) {
+            var jsonAttributes = json.Value<JObject>("attributes");
+            if (jsonAttributes != null) {
+                foreach (var attrib in jsonAttributes.Children()) {
                     attributes.Add(attrib.Value<JProperty>().Name, attrib.Value<JProperty>().Value.ToString());
                 }
             }
