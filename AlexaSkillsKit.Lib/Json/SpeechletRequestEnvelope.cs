@@ -32,7 +32,7 @@ namespace AlexaSkillsKit.Json
         /// <param name="json"></param>
         /// <returns></returns>
         public static SpeechletRequestEnvelope FromJson(JObject json) {
-            if (json["version"] == null || json["session"] == null || json["request"] == null) {
+            if (json["session"] == null || json["request"] == null) {
                 throw new SpeechletException("Request does not conform to schema");
             }
 
@@ -67,8 +67,7 @@ namespace AlexaSkillsKit.Json
 
             return new SpeechletRequestEnvelope {
                 Request = request,
-                Session = Session.FromJson(json.Value<JObject>("session")),
-                Version = json.Value<string>("version")
+                Session = Session.FromJson(json.Value<JObject>("session"))
             };
         }
         
@@ -79,11 +78,6 @@ namespace AlexaSkillsKit.Json
         }
 
         public virtual Session Session {
-            get;
-            set;
-        }
-
-        public virtual string Version {
             get;
             set;
         }

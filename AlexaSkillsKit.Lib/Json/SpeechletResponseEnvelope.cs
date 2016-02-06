@@ -35,10 +35,5 @@ namespace AlexaSkillsKit.Json
             get;
             set;
         }
-
-        public virtual string Version {
-            get;
-            set;
-        }
     }
 }
