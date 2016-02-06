@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlexaSkillsKit.Lib", "AlexaSkillsKit.Lib\AlexaSkillsKit.Lib.csproj", "{0EC882A8-AACA-4BD5-B449-72F20FDB8586}"
 EndProject
@@ -9,8 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlexaSkillsKit.Sample", "Al
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D35AD75F-7926-41CB-8C8D-BB36370F3E76}"
 	ProjectSection(SolutionItems) = preProject
+		.nuget\AlexaSkillsKit.Lib.nuspec = .nuget\AlexaSkillsKit.Lib.nuspec
 		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
