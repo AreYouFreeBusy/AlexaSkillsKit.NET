@@ -142,6 +142,7 @@ namespace AlexaSkillsKit.Speechlet
             }
 
             var responseEnvelope = new SpeechletResponseEnvelope {
+                Version = requestEnvelope.Version,
                 Response = response,
                 SessionAttributes = session.Attributes
             };
