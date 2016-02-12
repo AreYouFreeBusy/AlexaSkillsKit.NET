@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AlexaSkillsKit.NET</id>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <title>AlexaSkillsKit.NET</title>
     <authors>Stefan Negritoiu (FreeBusy)</authors>
     <owners>Stefan Negritoiu (FreeBusy)</owners>
@@ -16,6 +16,7 @@
     <releaseNotes>
 1.3.0: Incorporated Sept 2015 ASK update for account linking and access tokens
 1.4.0: Ability to override request validation policy and support for SSML output speech type
+1.4.1: Fixed a null reference exception when parsing the attributes property and improved special character support for SSML.
     </releaseNotes>
     <copyright>Copyright 2015 Stefan Negritoiu (FreeBusy)</copyright>
     <tags>amazon echo alexa speechlet</tags>
