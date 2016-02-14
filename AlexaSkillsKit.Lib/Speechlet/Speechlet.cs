@@ -26,13 +26,13 @@ namespace AlexaSkillsKit.Speechlet
 
             string chainUrl = null;
             if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER) ||
-                !String.IsNullOrEmpty(chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First())) {
+                String.IsNullOrEmpty(chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).First())) {
                 validationResult = validationResult | SpeechletRequestValidationResult.NoCertHeader;
             }
 
             string signature = null;
             if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER) ||
-                !String.IsNullOrEmpty(signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First())) {
+                String.IsNullOrEmpty(signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).First())) {
                 validationResult = validationResult | SpeechletRequestValidationResult.NoSignatureHeader;
             }
 
