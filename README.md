@@ -58,7 +58,7 @@ Alternatively you can host your app and the AlexaSkillsKit.NET library in any ot
 
 ### Override request validation policy
 
-By default, requests with missing or invalid signatures, or with missing or too old timestamps, are rejected. You can override the request validation policy if you'd like not to reject the request in certain conditions and/or to log validation failures you can override the policy.
+By default, requests with missing or invalid signatures, or with missing or too old timestamps, are rejected. You can override the request validation policy if you'd like not to reject the request in certain conditions and/or to log validation failures.
 
 ```csharp
 /// <summary>
@@ -72,17 +72,17 @@ public override bool OnRequestValidation(
     {
         if (result.HasFlag(SpeechletRequestValidationResult.NoSignatureHeader)) 
         {
-            Log.Error("Alexa request is missing signature header, rejecting.");
+            Debug.WriteLine("Alexa request is missing signature header, rejecting.");
             return false;
         }
         if (result.HasFlag(SpeechletRequestValidationResult.NoCertHeader)) 
         {
-            Log.Error("Alexa request is missing certificate header, rejecting.");
+            Debug.WriteLine("Alexa request is missing certificate header, rejecting.");
             return false;
         }
         if (result.HasFlag(SpeechletRequestValidationResult.InvalidSignature)) 
         {
-            Log.Error("Alexa request signature is invalid, rejecting.");
+            Debug.WriteLine("Alexa request signature is invalid, rejecting.");
             return false;
         }
         else 
@@ -90,7 +90,7 @@ public override bool OnRequestValidation(
             if (result.HasFlag(SpeechletRequestValidationResult.InvalidTimestamp)) 
             {
                 var diff = referenceTimeUtc - requestEnvelope.Request.Timestamp;
-                Log.Warn("Alexa request timestamped '{0:0.00}' seconds ago making timestamp invalid, but continue processing.",
+                Debug.WriteLine("Alexa request timestamped '{0:0.00}' seconds ago making timestamp invalid, but continue processing.",
                     diff.TotalSeconds);
             }
             return true;
