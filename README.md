@@ -53,3 +53,54 @@ The Sample app is using ASP.NET 4.5 WebApi 2 so wiring-up requests & responses f
 *Note: sample project is generated from the ASP.NET 4.5 WebApi 2 template so it includes a lot of functionality that's not directly related to Alexa Speechlets, but it does make make for a complete Web API project.*
 
 Alternatively you can host your app and the AlexaSkillsKit.NET library in any other web service framework like ServiceStack.
+
+## Advanced
+
+### Override request validation policy
+
+By default, requests with missing or invalid signatures, or with missing or too old timestamps, are rejected. You can override the request validation policy if you'd like not to reject the request in certain conditions and/or to log validation failures you can override the policy.
+
+```csharp
+/// <summary>
+/// return true if you want request to be processed, otherwise false
+/// </summary>
+public override bool OnRequestValidation(
+    SpeechletRequestValidationResult result, DateTime referenceTimeUtc, SpeechletRequestEnvelope requestEnvelope) 
+{
+
+    if (result != SpeechletRequestValidationResult.OK) 
+    {
+        if (result.HasFlag(SpeechletRequestValidationResult.NoSignatureHeader)) 
+        {
+            Log.Error("Alexa request is missing signature header, rejecting.");
+            return false;
+        }
+        if (result.HasFlag(SpeechletRequestValidationResult.NoCertHeader)) 
+        {
+            Log.Error("Alexa request is missing certificate header, rejecting.");
+            return false;
+        }
+        if (result.HasFlag(SpeechletRequestValidationResult.InvalidSignature)) 
+        {
+            Log.Error("Alexa request signature is invalid, rejecting.");
+            return false;
+        }
+        else 
+        {
+            if (result.HasFlag(SpeechletRequestValidationResult.InvalidTimestamp)) 
+            {
+                var diff = referenceTimeUtc - requestEnvelope.Request.Timestamp;
+                Log.Warn("Alexa request timestamped '{0:0.00}' seconds ago making timestamp invalid, but continue processing.",
+                    diff.TotalSeconds);
+            }
+            return true;
+        }
+    }
+    else 
+    {      
+        var diff = referenceTimeUtc - requestEnvelope.Request.Timestamp;
+        Log.Debug("Alexa request timestamped '{0:0.00}' seconds ago.", diff.TotalSeconds);
+        return true;
+    }            
+}
+```
