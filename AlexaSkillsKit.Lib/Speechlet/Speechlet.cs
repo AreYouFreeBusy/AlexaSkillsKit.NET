@@ -45,9 +45,18 @@ namespace AlexaSkillsKit.Speechlet
                     validationResult = validationResult | SpeechletRequestValidationResult.InvalidSignature;
                 }
             }
-            
-            var alexaContent = UTF8Encoding.UTF8.GetString(alexaBytes);
-            var alexaRequest = SpeechletRequestEnvelope.FromJson(alexaContent);
+
+            SpeechletRequestEnvelope alexaRequest = null;
+            try {
+                var alexaContent = UTF8Encoding.UTF8.GetString(alexaBytes);
+                alexaRequest = SpeechletRequestEnvelope.FromJson(alexaContent);
+            }
+            catch (Newtonsoft.Json.JsonReaderException) {
+                validationResult = validationResult | SpeechletRequestValidationResult.InvalidJson;
+            }
+            catch (InvalidCastException) {
+                validationResult = validationResult | SpeechletRequestValidationResult.InvalidJson;
+            }
 
             // attempt to verify timestamp only if we were able to parse request body
             if (alexaRequest != null) {
@@ -56,7 +65,7 @@ namespace AlexaSkillsKit.Speechlet
                 }
             }
 
-            if (!OnRequestValidation(validationResult, now, alexaRequest)) {
+            if (alexaRequest == null || !OnRequestValidation(validationResult, now, alexaRequest)) {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest) {
                     ReasonPhrase = validationResult.ToString()
                 };

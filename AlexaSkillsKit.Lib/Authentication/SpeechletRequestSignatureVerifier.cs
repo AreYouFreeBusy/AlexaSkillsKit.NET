@@ -138,9 +138,15 @@ namespace AlexaSkillsKit.Authentication
         public static bool CheckRequestSignature(
             byte[] serializedSpeechletRequest, string expectedSignature, Org.BouncyCastle.X509.X509Certificate cert) {
 
-            var publicKey = (Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters)cert.GetPublicKey();
-            var expectedSig = Convert.FromBase64String(expectedSignature);
+            byte[] expectedSig = null;
+            try {
+                expectedSig = Convert.FromBase64String(expectedSignature);
+            }
+            catch (FormatException) {
+                return false;
+            }
 
+            var publicKey = (Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters)cert.GetPublicKey();
             var signer = Org.BouncyCastle.Security.SignerUtilities.GetSigner(Sdk.SIGNATURE_ALGORITHM);
             signer.Init(false, publicKey);
             signer.BlockUpdate(serializedSpeechletRequest, 0, serializedSpeechletRequest.Length);            
