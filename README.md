@@ -99,7 +99,7 @@ public override bool OnRequestValidation(
     else 
     {      
         var diff = referenceTimeUtc - requestEnvelope.Request.Timestamp;
-        Log.Debug("Alexa request timestamped '{0:0.00}' seconds ago.", diff.TotalSeconds);
+        Debug.WriteLine("Alexa request timestamped '{0:0.00}' seconds ago.", diff.TotalSeconds);
         return true;
     }            
 }
