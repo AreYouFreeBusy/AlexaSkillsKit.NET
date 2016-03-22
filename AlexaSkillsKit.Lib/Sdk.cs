@@ -1,6 +1,7 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
+using Newtonsoft.Json;
 
 namespace AlexaSkillsKit
 {
@@ -16,5 +17,9 @@ namespace AlexaSkillsKit
         public const string SIGNATURE_ALGORITHM = "SHA1withRSA";
         public const string SIGNATURE_KEY_TYPE = "RSA";
         public const int TIMESTAMP_TOLERANCE_SEC = 150;
+
+        public static JsonSerializerSettings DeserializationSettings = new JsonSerializerSettings {
+            MissingMemberHandling = MissingMemberHandling.Ignore
+        };
     }
 }

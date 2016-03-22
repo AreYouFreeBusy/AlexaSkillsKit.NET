@@ -21,7 +21,7 @@ namespace AlexaSkillsKit.Json
                 throw new SpeechletException("Request content is empty");
             }
 
-            JObject json = JsonConvert.DeserializeObject<JObject>(content);
+            JObject json = JsonConvert.DeserializeObject<JObject>(content, Sdk.DeserializationSettings);
             return FromJson(json);
         }
 
