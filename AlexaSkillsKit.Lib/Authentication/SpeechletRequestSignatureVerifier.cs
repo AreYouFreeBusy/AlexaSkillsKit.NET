@@ -32,6 +32,11 @@ namespace AlexaSkillsKit.Authentication
         public static bool VerifyRequestSignature(
             byte[] serializedSpeechletRequest, string expectedSignature, string certChainUrl) {
 
+            if (!IsValidCertificateUrl(certChainUrl))
+            {
+                return false;
+            }
+
             X509Certificate cert = MemoryCache.Default.Get(CERT_CACHE_KEY) as X509Certificate;
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
@@ -80,7 +85,7 @@ namespace AlexaSkillsKit.Authentication
         public static X509Certificate RetrieveAndVerifyCertificate(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
             // so restrict host to an Alexa controlled subdomain/path
-            if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
+            // if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
 
             var webClient = new WebClient();
             var content = webClient.DownloadString(certChainUrl);
@@ -172,6 +177,39 @@ namespace AlexaSkillsKit.Authentication
             }
 
             return found;
+        }
+
+        private static bool IsValidCertificateUrl(
+            string certChainUrl)
+        {
+            if (!String.IsNullOrEmpty(certChainUrl))
+            {
+                if ((certChainUrl.Length >= 8) && (certChainUrl.Substring(0, 8).ToLower() != "https://"))
+                {
+                    return false;
+                }
+
+                if ((certChainUrl.Length >= 24) && (certChainUrl.Substring(0, 24).ToLower() != "https://s3.amazonaws.com"))
+                {
+                    return false;
+                }
+
+                if (!certChainUrl.Contains("/echo.api/echo-api-cert"))
+                {
+                    return false;
+                }
+
+                string portTest = certChainUrl.ToLower().Split(':', '/')[1];
+                if (!String.IsNullOrEmpty(portTest))
+                {
+                    if (portTest != "443")
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }
