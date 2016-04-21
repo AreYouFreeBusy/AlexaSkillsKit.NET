@@ -18,12 +18,17 @@ namespace AlexaSkillsKit.Authentication
 {
     public class SpeechletRequestSignatureVerifier
     {
-        private const string CERT_CACHE_KEY = "AlexaAppKit_" + Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER;
+        private const string CERT_CACHE_KEY_PREFIX = "AlexaAppKit_" + Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER;
 
         private static CacheItemPolicy _policy = new CacheItemPolicy {
             Priority = CacheItemPriority.Default,
             AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(24)
         };
+        
+        private static string GetCacheKey(string certChainUrl)
+        {
+            return CERT_CACHE_KEY_PREFIX + (certChainUrl ?? string.Empty);
+        }
 
 
         /// <summary>
@@ -37,7 +42,7 @@ namespace AlexaSkillsKit.Authentication
                 return false;
             }
 
-            X509Certificate cert = MemoryCache.Default.Get(CERT_CACHE_KEY) as X509Certificate;
+            X509Certificate cert = MemoryCache.Default.Get(GetCacheKey(certChainUrl)) as X509Certificate;
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
 
@@ -48,7 +53,7 @@ namespace AlexaSkillsKit.Authentication
                 cert = RetrieveAndVerifyCertificate(certChainUrl);
                 if (cert == null) return false;
 
-                MemoryCache.Default.Set(CERT_CACHE_KEY, cert, _policy);
+                MemoryCache.Default.Set(GetCacheKey(certChainUrl), cert, _policy);
             }
 
             return CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert);
@@ -61,7 +66,7 @@ namespace AlexaSkillsKit.Authentication
         public async static Task<bool> VerifyRequestSignatureAsync(
             byte[] serializedSpeechletRequest, string expectedSignature, string certChainUrl) {
 
-            X509Certificate cert = MemoryCache.Default.Get(CERT_CACHE_KEY) as X509Certificate;
+            X509Certificate cert = MemoryCache.Default.Get(GetCacheKey(certChainUrl)) as X509Certificate;
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
 
@@ -72,7 +77,7 @@ namespace AlexaSkillsKit.Authentication
                 cert = await RetrieveAndVerifyCertificateAsync(certChainUrl);
                 if (cert == null) return false;
 
-                MemoryCache.Default.Set(CERT_CACHE_KEY, cert, _policy);
+                MemoryCache.Default.Set(GetCacheKey(certChainUrl), cert, _policy);
             }
 
             return CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert);
@@ -85,7 +90,7 @@ namespace AlexaSkillsKit.Authentication
         public static X509Certificate RetrieveAndVerifyCertificate(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
             // so restrict host to an Alexa controlled subdomain/path
-            // if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
+            if (!IsValidCertificateUrl(certChainUrl)) return null;
 
             var webClient = new WebClient();
             var content = webClient.DownloadString(certChainUrl);
@@ -113,7 +118,7 @@ namespace AlexaSkillsKit.Authentication
         public async static Task<X509Certificate> RetrieveAndVerifyCertificateAsync(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
             // so restrict host to an Alexa controlled subdomain/path
-            if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
+            if (!IsValidCertificateUrl(certChainUrl)) return null;
 
             var httpClient = new HttpClient();
             var httpResponse = await httpClient.GetAsync(certChainUrl);
