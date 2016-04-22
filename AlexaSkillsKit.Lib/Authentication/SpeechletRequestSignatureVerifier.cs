@@ -25,12 +25,6 @@ namespace AlexaSkillsKit.Authentication
             AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(24)
         };
         
-        private static string GetCacheKey(string certChainUrl)
-        {
-            return CERT_CACHE_KEY_PREFIX + (certChainUrl ?? string.Empty);
-        }
-
-
         /// <summary>
         /// Verifies request signature and manages the caching of the signature certificate
         /// </summary>
@@ -184,37 +178,54 @@ namespace AlexaSkillsKit.Authentication
             return found;
         }
 
+        /// <summary>
+        /// Validates that the chain URL matches Amazon's requirements.
+        /// </summary>
+        /// <param name="certChainUrl">The URL to validate.</param>
+        /// <returns>Whether or not the URL is valid.</returns>
         private static bool IsValidCertificateUrl(
             string certChainUrl)
         {
-            if (!String.IsNullOrEmpty(certChainUrl))
+            if (string.IsNullOrEmpty(certChainUrl))
             {
-                if ((certChainUrl.Length >= 8) && (certChainUrl.Substring(0, 8).ToLower() != "https://"))
+                return false;
+            }
+
+            if ((certChainUrl.Length >= 8) && (certChainUrl.Substring(0, 8).ToLower() != "https://"))
+            {
+                return false;
+            }
+
+            if ((certChainUrl.Length >= 24) && (certChainUrl.Substring(0, 24).ToLower() != "https://s3.amazonaws.com"))
+            {
+                return false;
+            }
+
+            if (!certChainUrl.Contains("/echo.api/echo-api-cert"))
+            {
+                return false;
+            }
+
+            string portTest = certChainUrl.ToLower().Split(':', '/')[1];
+            if (!String.IsNullOrEmpty(portTest))
+            {
+                if (portTest != "443")
                 {
                     return false;
-                }
-
-                if ((certChainUrl.Length >= 24) && (certChainUrl.Substring(0, 24).ToLower() != "https://s3.amazonaws.com"))
-                {
-                    return false;
-                }
-
-                if (!certChainUrl.Contains("/echo.api/echo-api-cert"))
-                {
-                    return false;
-                }
-
-                string portTest = certChainUrl.ToLower().Split(':', '/')[1];
-                if (!String.IsNullOrEmpty(portTest))
-                {
-                    if (portTest != "443")
-                    {
-                        return false;
-                    }
                 }
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets the cache key to use for a certificate chain URL.
+        /// </summary>
+        /// <param name="certChainUrl">The URL of the cert being validated.</param>
+        /// <returns>The unique cache key.</returns>
+        private static string GetCacheKey(string certChainUrl)
+        {
+            return CERT_CACHE_KEY_PREFIX + (certChainUrl ?? string.Empty);
         }
     }
 }
