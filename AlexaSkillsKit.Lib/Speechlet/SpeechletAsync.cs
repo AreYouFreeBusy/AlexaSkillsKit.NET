@@ -80,7 +80,7 @@ namespace AlexaSkillsKit.Speechlet
             }
             else {
                 httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
-                httpResponse.Content = new StringContent(alexaResponse, Encoding.Unicode, "application/json");
+                httpResponse.Content = new StringContent(alexaResponse, Encoding.UTF8, "application/json");
                 Debug.WriteLine(httpResponse.ToLogString());
             }
 
