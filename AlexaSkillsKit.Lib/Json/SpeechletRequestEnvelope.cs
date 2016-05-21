@@ -32,12 +32,8 @@ namespace AlexaSkillsKit.Json
         /// <param name="json"></param>
         /// <returns></returns>
         public static SpeechletRequestEnvelope FromJson(JObject json) {
-            if (json["version"] == null || json["session"] == null || json["request"] == null) {
-                throw new SpeechletException("Request does not conform to schema");
-            }
-
-            if (json.Value<string>("version") != Sdk.VERSION) {
-                // will still attempt to parse request content but might be useful to log a warning
+            if (json["version"] != null && json.Value<string>("version") != Sdk.VERSION) {
+                throw new SpeechletException("Request must conform to 1.0 schema.");
             }
 
             SpeechletRequest request;
