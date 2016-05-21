@@ -77,6 +77,8 @@
     <Compile Include="Speechlet\SpeechletResponse.cs" />
     <Compile Include="Speechlet\Application.cs" />
     <Compile Include="Speechlet\User.cs" />
+    <Compile Include="UI\Image.cs" />
+    <Compile Include="UI\StandardCard.cs" />
     <Compile Include="UI\SsmlOutputSpeech.cs" />
     <Compile Include="UI\Reprompt.cs" />
     <Compile Include="UI\Card.cs" />

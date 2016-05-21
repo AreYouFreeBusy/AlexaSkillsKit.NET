@@ -16,6 +16,7 @@ namespace AlexaSkillsKit.UI
             set;
         }
 
+        [Obsolete("field has been deprecated from ASK and will be removed in a future version of this library")]
         public virtual string Subtitle {
             get;
             set;
