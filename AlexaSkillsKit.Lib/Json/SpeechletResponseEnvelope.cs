@@ -11,7 +11,7 @@ namespace AlexaSkillsKit.Json
     public class SpeechletResponseEnvelope
     {
         private static JsonSerializerSettings _serializerSettings = new JsonSerializerSettings() {
-            NullValueHandling = NullValueHandling.Include,
+            NullValueHandling = NullValueHandling.Ignore, 
             ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
             Converters = new List<JsonConverter> { new Newtonsoft.Json.Converters.StringEnumConverter() }
         };
