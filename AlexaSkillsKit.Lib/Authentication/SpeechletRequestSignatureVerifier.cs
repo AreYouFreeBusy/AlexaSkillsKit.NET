@@ -18,12 +18,34 @@ namespace AlexaSkillsKit.Authentication
 {
     public class SpeechletRequestSignatureVerifier
     {
-        private const string CERT_CACHE_KEY = "AlexaAppKit_" + Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER;
+        private const string CERT_CACHE_KEY = "AlexaSkillsKit_" + Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER;
 
         private static CacheItemPolicy _policy = new CacheItemPolicy {
             Priority = CacheItemPriority.Default,
             AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(24)
         };
+
+
+        /// <summary>
+        /// Verifying the Signature Certificate URL per requirements documented at
+        /// https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-web-service
+        /// </summary>
+        public static bool VerifyCertificateUrl(string certChainUrl) {
+            if (String.IsNullOrEmpty(certChainUrl)) {
+                return false;
+            }
+
+            Uri certChainUri;
+            if (!Uri.TryCreate(certChainUrl, UriKind.Absolute, out certChainUri)) {
+                return false;
+            }
+
+            return
+                certChainUri.Host.Equals(Sdk.SIGNATURE_CERT_URL_HOST, StringComparison.OrdinalIgnoreCase) &&
+                certChainUri.PathAndQuery.StartsWith(Sdk.SIGNATURE_CERT_URL_PATH) &&
+                certChainUri.Scheme == Uri.UriSchemeHttps &&
+                certChainUri.Port == 443;
+        }
 
 
         /// <summary>
@@ -80,7 +102,7 @@ namespace AlexaSkillsKit.Authentication
         public static X509Certificate RetrieveAndVerifyCertificate(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
             // so restrict host to an Alexa controlled subdomain/path
-            if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
+            if (!VerifyCertificateUrl(certChainUrl)) return null;
 
             var webClient = new WebClient();
             var content = webClient.DownloadString(certChainUrl);
@@ -108,7 +130,7 @@ namespace AlexaSkillsKit.Authentication
         public async static Task<X509Certificate> RetrieveAndVerifyCertificateAsync(string certChainUrl) {
             // making requests to externally-supplied URLs is an open invitation to DoS
             // so restrict host to an Alexa controlled subdomain/path
-            if (!Regex.IsMatch(certChainUrl, Sdk.SIGNATURE_CERT_URL_MASK_REGEX)) return null;
+            if (!VerifyCertificateUrl(certChainUrl)) return null;
 
             var httpClient = new HttpClient();
             var httpResponse = await httpClient.GetAsync(certChainUrl);
