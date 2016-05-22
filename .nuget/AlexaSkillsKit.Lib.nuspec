@@ -8,7 +8,7 @@
     <owners>Stefan Negritoiu (FreeBusy)</owners>
     <projectUrl>https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET</projectUrl>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
-    <iconUrl>http://g-ecx.images-amazon.com/images/G/01/lwa/btnLWA_gold_64x64.png</iconUrl>
+    <iconUrl>https://developer.amazon.com/public/binaries/content/gallery/developerportalpublic/solutions/alexa/dp_image_kit_02.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
 .NET library that simplifies Alexa skills development; interface-compatible with Amazon's AlexaSkillsKit for Java
