@@ -7,7 +7,7 @@ namespace AlexaSkillsKit.UI
 {
     public class Reprompt
     {
-        public PlainTextOutputSpeech OutputSpeech {
+        public OutputSpeech OutputSpeech {
             get;
             set;
         }
