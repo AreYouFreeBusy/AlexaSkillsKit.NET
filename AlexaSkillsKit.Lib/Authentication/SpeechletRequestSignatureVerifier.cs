@@ -18,7 +18,7 @@ namespace AlexaSkillsKit.Authentication
 {
     public class SpeechletRequestSignatureVerifier
     {
-        private const string CERT_CACHE_KEY = "AlexaSkillsKit_" + Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER;
+        private static Func<string, string> _getCertCacheKey = (string url) => string.Format("{0}_{1}", Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER, url);
 
         private static CacheItemPolicy _policy = new CacheItemPolicy {
             Priority = CacheItemPriority.Default,
@@ -54,7 +54,8 @@ namespace AlexaSkillsKit.Authentication
         public static bool VerifyRequestSignature(
             byte[] serializedSpeechletRequest, string expectedSignature, string certChainUrl) {
 
-            X509Certificate cert = MemoryCache.Default.Get(CERT_CACHE_KEY) as X509Certificate;
+            string certCacheKey = _getCertCacheKey(certChainUrl);
+            X509Certificate cert = MemoryCache.Default.Get(certCacheKey) as X509Certificate;
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
 
@@ -65,7 +66,7 @@ namespace AlexaSkillsKit.Authentication
                 cert = RetrieveAndVerifyCertificate(certChainUrl);
                 if (cert == null) return false;
 
-                MemoryCache.Default.Set(CERT_CACHE_KEY, cert, _policy);
+                MemoryCache.Default.Set(certCacheKey, cert, _policy);
             }
 
             return CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert);
@@ -78,7 +79,8 @@ namespace AlexaSkillsKit.Authentication
         public async static Task<bool> VerifyRequestSignatureAsync(
             byte[] serializedSpeechletRequest, string expectedSignature, string certChainUrl) {
 
-            X509Certificate cert = MemoryCache.Default.Get(CERT_CACHE_KEY) as X509Certificate;
+            string certCacheKey = _getCertCacheKey(certChainUrl);
+            X509Certificate cert = MemoryCache.Default.Get(certCacheKey) as X509Certificate;
             if (cert == null ||
                 !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
 
@@ -89,7 +91,7 @@ namespace AlexaSkillsKit.Authentication
                 cert = await RetrieveAndVerifyCertificateAsync(certChainUrl);
                 if (cert == null) return false;
 
-                MemoryCache.Default.Set(CERT_CACHE_KEY, cert, _policy);
+                MemoryCache.Default.Set(certCacheKey, cert, _policy);
             }
 
             return CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert);
