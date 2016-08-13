@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AlexaSkillsKit.NET</id>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
     <title>AlexaSkillsKit.NET</title>
     <authors>Stefan Negritoiu (FreeBusy)</authors>
     <owners>Stefan Negritoiu (FreeBusy)</owners>
@@ -11,14 +11,15 @@
     <iconUrl>https://developer.amazon.com/public/binaries/content/gallery/developerportalpublic/solutions/alexa/dp_image_kit_02.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-.NET library that simplifies Alexa skills development; interface-compatible with Amazon's AlexaSkillsKit for Java
+.NET library that simplifies Alexa skills development; same object model as Amazon's AlexaSkillsKit for Java
     </description>
     <releaseNotes>
 1.3.0: Incorporated Sept 2015 ASK update for account linking and access tokens
 1.4.0: Ability to override request validation policy and support for SSML output speech type
-1.5.0: Fully implement cert URL verification requirement and support for Standard cards
+1.5.0: Fully implement certificate verification requirement and support for Standard cards
+1.5.1: bug fix in certificate verification  
     </releaseNotes>
-    <copyright>Copyright 2015 Stefan Negritoiu (FreeBusy)</copyright>
+    <copyright>Copyright 2016 Stefan Negritoiu (FreeBusy)</copyright>
     <tags>amazon echo alexa speechlet</tags>
     <dependencies>
       <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
