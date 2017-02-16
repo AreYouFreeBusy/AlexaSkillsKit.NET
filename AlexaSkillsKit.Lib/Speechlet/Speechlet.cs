@@ -116,6 +116,7 @@ namespace AlexaSkillsKit.Speechlet
         /// <returns></returns>
         private string DoProcessRequest(SpeechletRequestEnvelope requestEnvelope) {
             Session session = requestEnvelope.Session;
+            Context context = requestEnvelope.Context;
             SpeechletResponse response = null;
 
             // process launch request
@@ -127,7 +128,11 @@ namespace AlexaSkillsKit.Speechlet
                 }
                 response = OnLaunch(request, session);
             }
-
+            else if (requestEnvelope.Request is AudioPlayerRequest)
+            {
+                var request = requestEnvelope.Request as AudioPlayerRequest;
+                response = OnAudioIntent(request, context);
+            }
             // process intent request
             else if (requestEnvelope.Request is IntentRequest) {
                 var request = requestEnvelope.Request as IntentRequest;
@@ -140,7 +145,7 @@ namespace AlexaSkillsKit.Speechlet
                     OnSessionStarted(
                         new SessionStartedRequest(request.RequestId, request.Timestamp), session);
                 }
-                response = OnIntent(request, session);
+                response = OnIntent(request, session, requestEnvelope.Context);
             }
 
             // process session ended request
@@ -152,7 +157,7 @@ namespace AlexaSkillsKit.Speechlet
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
                 Response = response,
-                SessionAttributes = requestEnvelope.Session.Attributes
+                SessionAttributes = session?.Attributes ?? new Dictionary<string, string>()//requestEnvelope.Session?.Attributes
             };
             return responseEnvelope.ToJson();
         }
@@ -194,8 +199,9 @@ namespace AlexaSkillsKit.Speechlet
         }
 
 
-        public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session);
+        public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
+        public abstract SpeechletResponse OnAudioIntent(AudioPlayerRequest audioRequest, Context context);
         public abstract void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
         public abstract void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);
     }

@@ -11,7 +11,7 @@ namespace AlexaSkillsKit.Speechlet
         bool OnRequestValidation(
             SpeechletRequestValidationResult result, DateTime referenceTimeUtc, SpeechletRequestEnvelope requestEnvelope);
         
-        SpeechletResponse OnIntent(IntentRequest intentRequest, Session session);
+        SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
         void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
         void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);
