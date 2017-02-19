@@ -56,6 +56,9 @@
     <Compile Include="Authentication\SpeechletRequestValidationResult.cs" />
     <Compile Include="Authentication\SpeechletRequestSignatureVerifier.cs" />
     <Compile Include="Authentication\SpeechletRequestTimestampVerifier.cs" />
+    <Compile Include="DateRangeParser\AlexaDateRange.cs" />
+    <Compile Include="DateRangeParser\AlexaDateRangeConverter.cs" />
+    <Compile Include="DateRangeParser\AlexaDateRangeConvertException.cs" />
     <Compile Include="HttpHelpers.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />
     <Compile Include="Json\SpeechletResponseEnvelope.cs" />
@@ -91,6 +94,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
