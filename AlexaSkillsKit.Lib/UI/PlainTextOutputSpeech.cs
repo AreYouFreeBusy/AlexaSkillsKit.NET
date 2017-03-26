@@ -15,5 +15,13 @@ namespace AlexaSkillsKit.UI
             get;
             set;
         }
+        
+        public static implicit operator SpeechOutput(string spokenText)
+        {
+            return new PlainTextOutputSpeech()
+            {
+                Text = spokenText
+            };
+        }
     }
 }
