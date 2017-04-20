@@ -17,7 +17,12 @@ namespace Sample.Controllers
         private const string NAME_KEY = "name";
         private const string NAME_SLOT = "Name";
 
-        
+
+        public override SpeechletResponse OnAudioIntent(AudioPlayerRequest audioRequest, Context context)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void OnSessionStarted(SessionStartedRequest request, Session session) {            
             Log.Info("OnSessionStarted requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }
@@ -29,7 +34,7 @@ namespace Sample.Controllers
         }
 
 
-        public override SpeechletResponse OnIntent(IntentRequest request, Session session) {
+        public override SpeechletResponse OnIntent(IntentRequest request, Session session, Context context) {
             Log.Info("OnIntent requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
 
             // Get intent from the request object.
