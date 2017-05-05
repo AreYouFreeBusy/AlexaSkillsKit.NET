@@ -28,7 +28,7 @@ namespace AlexaSkillsKit.Speechlet
             return new Context
             {
                 System = System.FromJson(json.Value<JObject>("System"))
-            };
+            }; 
         }
 
         public virtual System System

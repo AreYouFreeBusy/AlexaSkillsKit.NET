@@ -23,7 +23,7 @@ namespace AlexaSkillsKit.UI
                     ? new string[] {"read::alexa:device:all:address"}
                     : new string[] {"read::alexa:device:all:address:country_and_postal_code"};
             }
-        }
+        } 
 
         
     }

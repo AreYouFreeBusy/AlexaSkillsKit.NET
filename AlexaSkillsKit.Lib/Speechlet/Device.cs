@@ -20,7 +20,7 @@ namespace AlexaSkillsKit.Speechlet
                 Id = json.Value<string>("deviceId"), 
             };
         }
-
+         
         public virtual string Id
         {
             get;

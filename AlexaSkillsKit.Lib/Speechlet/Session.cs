@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet
 {
-    public class Session
+    public class  Session
     {
         public const string INTENT_SEQUENCE = "intentSequence";
         public const string SEPARATOR = ";";
