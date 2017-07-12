@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace AlexaSkillsKit.Helpers
 {
@@ -11,7 +12,7 @@ namespace AlexaSkillsKit.Helpers
                 DateTime datetime;
 
                 //Try a generic parse
-                if (DateTime.TryParse(datetimeString, out datetime))
+                if (DateTime.TryParse(datetimeString, CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime))
                 {
                     return datetime;
                 }
