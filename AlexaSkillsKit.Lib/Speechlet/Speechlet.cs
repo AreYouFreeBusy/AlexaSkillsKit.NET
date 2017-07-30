@@ -51,10 +51,8 @@ namespace AlexaSkillsKit.Speechlet
                 var alexaContent = UTF8Encoding.UTF8.GetString(alexaBytes);
                 alexaRequest = SpeechletRequestEnvelope.FromJson(alexaContent);
             }
-            catch (Newtonsoft.Json.JsonReaderException) {
-                validationResult = validationResult | SpeechletRequestValidationResult.InvalidJson;
-            }
-            catch (InvalidCastException) {
+            catch (Exception ex)
+            when (ex is Newtonsoft.Json.JsonReaderException || ex is InvalidCastException || ex is FormatException) {
                 validationResult = validationResult | SpeechletRequestValidationResult.InvalidJson;
             }
 

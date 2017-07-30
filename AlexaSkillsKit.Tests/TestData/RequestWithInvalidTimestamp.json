@@ -1,0 +1,26 @@
+﻿{
+  "session": {
+    "sessionId": "SessionId.710422a8-4f2b-4dd5-8a59-81995f7eb6d2",
+    "application": {
+      "applicationId": "amzn1.ask.skill.cde8bde3-7629-4d89-9871-952be8243831"
+    },
+    "attributes": {
+    },
+    "user": {
+      "userId": "[redacted]"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.295020ef-52a7-42c5-8d7e-ff6d103e9f13",
+    "locale": "en-US",
+    "timestamp": "BAADBEEF",
+    "intent": {
+      "name": "ClosestHospitalIntent",
+      "slots": {
+      }
+    }
+  },
+  "version":"1.0"
+}
