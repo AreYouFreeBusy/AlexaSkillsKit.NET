@@ -78,6 +78,8 @@
     <Compile Include="Speechlet\SpeechletResponse.cs" />
     <Compile Include="Speechlet\Application.cs" />
     <Compile Include="Speechlet\User.cs" />
+    <Compile Include="UI\AudioItem.cs" />
+    <Compile Include="UI\Directive.cs" />
     <Compile Include="UI\Image.cs" />
     <Compile Include="UI\StandardCard.cs" />
     <Compile Include="UI\SsmlOutputSpeech.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="UI\PlainTextOutputSpeech.cs" />
     <Compile Include="UI\LinkAccountCard.cs" />
     <Compile Include="UI\SimpleCard.cs" />
+    <Compile Include="UI\Stream.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
