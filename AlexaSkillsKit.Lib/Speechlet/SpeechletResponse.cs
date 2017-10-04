@@ -2,6 +2,8 @@
 
 using System;
 using AlexaSkillsKit.UI;
+using System.Collections.Generic;
+using AlexaSkillsKit.UI.EchoShowUI;
 
 namespace AlexaSkillsKit.Speechlet
 {
@@ -18,6 +20,12 @@ namespace AlexaSkillsKit.Speechlet
         }
 
         public virtual Reprompt Reprompt {
+            get;
+            set;
+        }
+
+        public virtual IList<Directive> Directives
+        {
             get;
             set;
         }
