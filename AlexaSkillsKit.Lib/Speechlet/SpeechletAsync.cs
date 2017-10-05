@@ -122,7 +122,7 @@ namespace AlexaSkillsKit.Speechlet
                 var request = requestEnvelope.Request as LaunchRequest;
                 if (requestEnvelope.Session.IsNew) {
                     await OnSessionStartedAsync(
-                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
+                        new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
                 }
                 response = await OnLaunchAsync(request, session);
             }
@@ -137,7 +137,7 @@ namespace AlexaSkillsKit.Speechlet
 
                 if (requestEnvelope.Session.IsNew) {
                     await OnSessionStartedAsync(
-                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
+                        new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
                 }
                 response = await OnIntentAsync(request, session);
             }

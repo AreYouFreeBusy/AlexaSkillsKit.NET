@@ -7,8 +7,8 @@ namespace AlexaSkillsKit.Speechlet
 {
     public class SessionEndedRequest : SpeechletRequest
     {
-        public SessionEndedRequest(string requestId, DateTime timestamp, SessionEndedRequest.ReasonEnum reason) 
-            : base(requestId, timestamp) {
+        public SessionEndedRequest(string requestId, DateTime timestamp, string locale, SessionEndedRequest.ReasonEnum reason) 
+            : base(requestId, timestamp, locale) {
 
             Reason = reason;
         }

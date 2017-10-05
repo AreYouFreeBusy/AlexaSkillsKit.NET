@@ -41,22 +41,23 @@ namespace AlexaSkillsKit.Json
             JObject requestJson = json["request"].Value<JObject>();
             string requestType = requestJson["type"].Value<string>();
             string requestId = requestJson["requestId"].Value<string>();
+            string locale = requestJson["locale"].Value<string>();
             DateTime timestamp = DateTimeHelpers.FromAlexaTimestamp(requestJson);
             switch (requestType) {
                 case "LaunchRequest":
-                    request = new LaunchRequest(requestId, timestamp);
+                    request = new LaunchRequest(requestId, timestamp, locale);
                     break;
                 case "IntentRequest":
-                    request = new IntentRequest(requestId, timestamp, 
+                    request = new IntentRequest(requestId, timestamp, locale, 
                         Intent.FromJson(requestJson.Value<JObject>("intent")));
                     break;
                 case "SessionStartedRequest":
-                    request = new SessionStartedRequest(requestId, timestamp);
+                    request = new SessionStartedRequest(requestId, timestamp, locale);
                     break;
                 case "SessionEndedRequest":
                     SessionEndedRequest.ReasonEnum reason;
                     Enum.TryParse<SessionEndedRequest.ReasonEnum>(requestJson.Value<string>("reason"), out reason);
-                    request = new SessionEndedRequest(requestId, timestamp, reason);
+                    request = new SessionEndedRequest(requestId, timestamp, locale, reason);
                     break;
                 default:
                     throw new ArgumentException("json");

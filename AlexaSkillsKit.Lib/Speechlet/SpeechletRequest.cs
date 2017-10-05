@@ -7,9 +7,10 @@ namespace AlexaSkillsKit.Speechlet
 {
     public abstract class SpeechletRequest
     {
-        public SpeechletRequest(string requestId, DateTime timestamp) {
+        public SpeechletRequest(string requestId, DateTime timestamp, string locale) {
             RequestId = requestId;
             Timestamp = timestamp;
+            Locale = locale;
         }
 
         public string RequestId {
@@ -18,6 +19,11 @@ namespace AlexaSkillsKit.Speechlet
         }
 
         public DateTime Timestamp {
+            get;
+            private set;
+        }
+
+        public string Locale {
             get;
             private set;
         }
