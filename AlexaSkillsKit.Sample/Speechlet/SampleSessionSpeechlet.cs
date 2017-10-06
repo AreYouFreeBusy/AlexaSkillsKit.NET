@@ -6,6 +6,9 @@ using NLog;
 using AlexaSkillsKit.Speechlet;
 using AlexaSkillsKit.Slu;
 using AlexaSkillsKit.UI;
+using AlexaSkillsKit.Authentication;
+using AlexaSkillsKit.Json;
+using AlexaSkillsKit.UI.EchoShowUI;
 
 namespace Sample.Controllers
 {
@@ -29,7 +32,7 @@ namespace Sample.Controllers
         }
 
 
-        public override SpeechletResponse OnIntent(IntentRequest request, Session session) {
+        public override SpeechletResponse OnIntent(IntentRequest request, Session session, Context context) {
             Log.Info("OnIntent requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
 
             // Get intent from the request object.
@@ -133,6 +136,10 @@ namespace Sample.Controllers
             return BuildSpeechletResponse(intent.Name, speechOutput, shouldEndSession);
         }
 
+        public override bool OnRequestValidation(SpeechletRequestValidationResult result, DateTime referenceTimeUtc, SpeechletRequestEnvelope requestEnvelope)
+        {
+            return true;
+        }
 
         /**
          * Creates and returns the visual and spoken response with shouldEndSession flag
@@ -156,11 +163,70 @@ namespace Sample.Controllers
             PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
             speech.Text = output;
 
+            /* Create a directive for Echo Show (example)
+             * This can be separeted so it can be easier to create
+             * a Show Directive where you can only need to write 
+             * the important information
+             */
+            IList<Directive> listDirectiveTest = new List<Directive>();
+            Directive directiveTest = new Directive();
+            Template templateTest = new Template();
+            AlexaSkillsKit.UI.EchoShowUI.Image backgroundTest = new AlexaSkillsKit.UI.EchoShowUI.Image();
+            AlexaSkillsKit.UI.EchoShowUI.Image imageTest = new AlexaSkillsKit.UI.EchoShowUI.Image();
+
+            IList<Source> backgroundSourcesTest = new List<Source>();
+            IList<Source> imageSourcesTest = new List<Source>();
+
+            Source backgroundSource = new Source();
+            backgroundSource.Url = "URL for the background image - must be secure (https)";
+            Source imageSource = new Source();
+            imageSource.Url = "URL for the main image - must be secure (https)";
+
+            backgroundSourcesTest.Add(backgroundSource);
+            imageSourcesTest.Add(imageSource);
+
+            backgroundTest.ContentDescription = "Description for the background image";
+            backgroundTest.Sources = backgroundSourcesTest;
+
+            imageTest.ContentDescription = "Description for the main image";
+            imageTest.Sources = imageSourcesTest;
+
+            TextContent textContentTest = new TextContent();
+            MainContentText primaryContentTest = new MainContentText();
+            MainContentText secondaryContentTest = new MainContentText();
+            MainContentText tertiaryContentTest = new MainContentText();
+
+            primaryContentTest.Text = "Primary Text (could be formatted)";
+            primaryContentTest.Type = "RichText";
+
+            secondaryContentTest.Text = "Secondary Text (could be formatted)";
+            secondaryContentTest.Type = "RichText";
+
+            tertiaryContentTest.Text = "Tertiary Text (could be formatted)";
+            tertiaryContentTest.Type = "RichText";
+
+            textContentTest.PrimaryText = primaryContentTest;
+            textContentTest.SecondaryText = secondaryContentTest;
+            textContentTest.TertiaryText = tertiaryContentTest;
+
+            templateTest.Title = "Hello, this is a Test";
+            templateTest.BackButton = "HIDDEN";
+            templateTest.BackgroundImage = backgroundTest;
+            templateTest.Image = imageTest;
+            templateTest.Type = "BodyTemplate2";
+            templateTest.Token = "";
+            templateTest.TextContent = textContentTest;
+
+            directiveTest.Template = templateTest;
+            listDirectiveTest.Add(directiveTest);
+
+
             // Create the speechlet response.
             SpeechletResponse response = new SpeechletResponse();
             response.ShouldEndSession = shouldEndSession;
             response.OutputSpeech = speech;
             response.Card = card;
+            response.Directives = listDirectiveTest;
             return response;
         }
     }
