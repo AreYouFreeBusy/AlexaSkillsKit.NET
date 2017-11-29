@@ -30,7 +30,7 @@ namespace AlexaSkillsKit.Speechlet
             set;
         }
 
-        public virtual bool ShouldEndSession {
+        public virtual bool? ShouldEndSession {
             get;
             set;
         }

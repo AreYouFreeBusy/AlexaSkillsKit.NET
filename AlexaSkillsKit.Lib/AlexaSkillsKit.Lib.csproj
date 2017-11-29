@@ -86,9 +86,11 @@
     <Compile Include="UI\EchoShowUI\Directive.cs" />
     <Compile Include="UI\EchoShowUI\Image.cs" />
     <Compile Include="UI\EchoShowUI\MainContentText.cs" />
+    <Compile Include="UI\EchoShowUI\MetaData.cs" />
     <Compile Include="UI\EchoShowUI\Source.cs" />
     <Compile Include="UI\EchoShowUI\Template.cs" />
     <Compile Include="UI\EchoShowUI\TextContent.cs" />
+    <Compile Include="UI\EchoShowUI\Video.cs" />
     <Compile Include="UI\Image.cs" />
     <Compile Include="UI\StandardCard.cs" />
     <Compile Include="UI\SsmlOutputSpeech.cs" />

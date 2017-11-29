@@ -229,5 +229,37 @@ namespace Sample.Controllers
             response.Directives = listDirectiveTest;
             return response;
         }
+
+        /// <summary>
+        /// Creates an echo show video response
+        /// </summary>
+        /// <param name="title">video title</param>
+        /// <param name="subtitle">video subtitle</param>
+        /// <param name="url">url to video (must be https!)</param>
+        /// <remarks>shouldEndSession should be null (not true or false, null) for the video to work!</remarks>
+        /// <returns>Echo Show Video Directive, playing a single video.</returns>
+        private Directive BuildEchoShowVideoAppResponse(string title, string subtitle, string url)
+        {
+
+            Directive videoDirectiveTest = new Directive();
+
+
+            var VideoItem = new Video
+            {
+                source = url,
+                metadata = new MetaData
+                {
+                    title = title,
+                    subtitle = subtitle
+                }
+
+            };
+
+            videoDirectiveTest.videoItem = VideoItem;
+            videoDirectiveTest.type = "VideoApp.Launch";
+
+
+            return videoDirectiveTest;
+        }
     }
 }
