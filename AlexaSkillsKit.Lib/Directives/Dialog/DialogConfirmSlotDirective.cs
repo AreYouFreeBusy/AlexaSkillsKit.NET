@@ -11,7 +11,7 @@ namespace AlexaSkillsKit.Directives.Dialog
 
         }
 
-        public virtual Slot SlotToConfirm {
+        public virtual string SlotToConfirm {
             get;
             set;
         }

@@ -11,7 +11,7 @@ namespace AlexaSkillsKit.Directives.Dialog
 
         }
 
-        public virtual Slot SlotToElicit {
+        public virtual string SlotToElicit {
             get;
             set;
         }
