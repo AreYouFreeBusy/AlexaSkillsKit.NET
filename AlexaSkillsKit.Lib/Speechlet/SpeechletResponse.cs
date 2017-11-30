@@ -1,13 +1,19 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using System;
+using AlexaSkillsKit.Directives;
 using AlexaSkillsKit.UI;
+using System.Collections.Generic;
 
 namespace AlexaSkillsKit.Speechlet
 {
     public class SpeechletResponse
     {
         public virtual Card Card {
+            get;
+            set;
+        }
+
+        public virtual IEnumerable<Directive> Directives {
             get;
             set;
         }

@@ -56,6 +56,28 @@
     <Compile Include="Authentication\SpeechletRequestValidationResult.cs" />
     <Compile Include="Authentication\SpeechletRequestSignatureVerifier.cs" />
     <Compile Include="Authentication\SpeechletRequestTimestampVerifier.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioItem.cs" />
+    <Compile Include="Directives\Display\HintDirective.cs" />
+    <Compile Include="Directives\Display\DisplayRenderTemplateDirective.cs" />
+    <Compile Include="Directives\Display\DisplayTemplate.cs" />
+    <Compile Include="Directives\Display\Image.cs" />
+    <Compile Include="Directives\Display\ImageSource.cs" />
+    <Compile Include="Directives\Display\ListItem.cs" />
+    <Compile Include="Directives\Display\TextField.cs" />
+    <Compile Include="Directives\Display\TextContent.cs" />
+    <Compile Include="Directives\VideoApp\VideoAppLaunchDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioPlayerPlayDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioPlayerClearQueueDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioPlayerStopDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioItemStream.cs" />
+    <Compile Include="Directives\Dialog\DialogConfirmIntentDirective.cs" />
+    <Compile Include="Directives\Dialog\DialogDelegateDirective.cs" />
+    <Compile Include="Directives\Dialog\DialogDirective.cs" />
+    <Compile Include="Directives\Dialog\DialogConfirmSlotDirective.cs" />
+    <Compile Include="Directives\Dialog\DialogElicitSlotDirective.cs" />
+    <Compile Include="Directives\Directive.cs" />
+    <Compile Include="Directives\VideoApp\VideoItem.cs" />
+    <Compile Include="Directives\VideoApp\VideoItemMetadata.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
     <Compile Include="HttpHelpers.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />
@@ -92,6 +114,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
