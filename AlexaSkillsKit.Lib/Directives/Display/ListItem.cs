@@ -11,7 +11,7 @@
             set;
         }
 
-        public virtual Image Image
+        public virtual DisplayImage Image
         {
             get;
             set;

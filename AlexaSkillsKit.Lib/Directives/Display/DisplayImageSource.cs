@@ -3,7 +3,7 @@
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/display-interface-reference.html#image-object-specifications
     /// </summary>
-    public class ImageSource
+    public class DisplayImageSource
     {
         public virtual string Url {
             get;
