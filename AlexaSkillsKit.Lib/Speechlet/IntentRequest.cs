@@ -17,5 +17,18 @@ namespace AlexaSkillsKit.Speechlet
             get;
             private set;
         }
+
+        public virtual DialogStateEnum DialogState
+        {
+            get;
+            private set;
+        }
+
+        public enum DialogStateEnum
+        {
+            STARTED,
+            IN_PROGRESS,
+            COMPLETED
+        }
     }
 }

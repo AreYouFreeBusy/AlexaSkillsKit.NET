@@ -1,7 +1,6 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
-using System.Collections.Generic;
 
 namespace AlexaSkillsKit.Speechlet
 {
@@ -18,6 +17,12 @@ namespace AlexaSkillsKit.Speechlet
         }
 
         public DateTime Timestamp {
+            get;
+            private set;
+        }
+
+        public string Locale
+        {
             get;
             private set;
         }
