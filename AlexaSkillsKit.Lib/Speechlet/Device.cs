@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet
 {
@@ -15,10 +15,12 @@ namespace AlexaSkillsKit.Speechlet
         {
             if (json != null)
             {
-                Device returnDevice = new Device();
-                returnDevice.SupportedInterfaces = SupportedInterfaces.FromJson(json.Value<JObject>("supportedInterfaces"));
-                return returnDevice;
+                return new Device
+                {
+                    SupportedInterfaces = SupportedInterfaces.FromJson(json.Value<JObject>("supportedInterfaces"))
+                };
             }
+
             return null;
         }
     }

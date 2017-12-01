@@ -22,7 +22,12 @@ namespace Sample.Controllers
         private const string NAME_KEY = "name";
         private const string NAME_SLOT = "Name";
 
-        
+
+        public override SpeechletResponse OnAudioIntent(AudioPlayerRequest audioRequest, Context context)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void OnSessionStarted(SessionStartedRequest request, Session session) {            
             Log.Info("OnSessionStarted requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }
