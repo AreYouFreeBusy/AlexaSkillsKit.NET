@@ -38,10 +38,13 @@ namespace AlexaSkillsKit.Json
             }
 
             SpeechletRequest request;
-            JObject requestJson = json["request"].Value<JObject>();
-            string requestType = requestJson["type"].Value<string>();
-            string requestId = requestJson["requestId"].Value<string>();
+            JObject requestJson = json.Value<JObject>("request");
+            string requestType = requestJson.Value<string>("type");
+            string requestId = requestJson.Value<string>("requestId");
             DateTime timestamp = DateTimeHelpers.FromAlexaTimestamp(requestJson);
+            string token = requestJson.Value<string>("token");
+            long offset = requestJson.Value<long>("offsetInMilliseconds");
+            string type = requestJson.Value<string>("type");
             switch (requestType) {
                 case "LaunchRequest":
                     request = new LaunchRequest(requestId, timestamp);
@@ -59,13 +62,21 @@ namespace AlexaSkillsKit.Json
                     request = new SessionEndedRequest(requestId, timestamp, reason);
                     break;
                 default:
-                    throw new ArgumentException("json");
+                    if (requestType.StartsWith("PlaybackController") || requestType.StartsWith("AudioPlayer"))
+                    {
+                        request = new AudioPlayerRequest(requestId, timestamp, token, offset, type);
+                    }
+                    else if (requestType == "System.ExceptionEncountered")
+                        request = null;
+                    else
+                        throw new ArgumentException("json");
+                    break;
             }
 
             return new SpeechletRequestEnvelope {
                 Request = request,
-                Session = Session.FromJson(json["session"].Value<JObject>()),
-                Version = json["version"]?.Value<string>(),
+                Session = Session.FromJson(json.Value<JObject>("session")),
+                Version = json.Value<string>("version"),
                 Context = Context.FromJson(json.Value<JObject>("context"))
             };
         }
