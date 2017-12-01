@@ -41,12 +41,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
-      <HintPath>..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -66,6 +66,10 @@
     <Compile Include="Authentication\SpeechletRequestSignatureVerifier.cs" />
     <Compile Include="Authentication\SpeechletRequestTimestampVerifier.cs" />
     <Compile Include="Directives\AudioPlayer\AudioItem.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioPlayerPlayDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioPlayerClearQueueDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioPlayerStopDirective.cs" />
+    <Compile Include="Directives\AudioPlayer\AudioItemStream.cs" />
     <Compile Include="Directives\Display\HintDirective.cs" />
     <Compile Include="Directives\Display\DisplayRenderTemplateDirective.cs" />
     <Compile Include="Directives\Display\DisplayTemplate.cs" />
@@ -75,19 +79,15 @@
     <Compile Include="Directives\Display\TextField.cs" />
     <Compile Include="Directives\Display\TextContent.cs" />
     <Compile Include="Directives\Dialog\SpeechletResponseBuilderExtentions.cs" />
-    <Compile Include="Directives\VideoApp\VideoAppLaunchDirective.cs" />
-    <Compile Include="Directives\AudioPlayer\AudioPlayerPlayDirective.cs" />
-    <Compile Include="Directives\AudioPlayer\AudioPlayerClearQueueDirective.cs" />
-    <Compile Include="Directives\AudioPlayer\AudioPlayerStopDirective.cs" />
-    <Compile Include="Directives\AudioPlayer\AudioItemStream.cs" />
     <Compile Include="Directives\Dialog\DialogConfirmIntentDirective.cs" />
     <Compile Include="Directives\Dialog\DialogDelegateDirective.cs" />
     <Compile Include="Directives\Dialog\DialogDirective.cs" />
     <Compile Include="Directives\Dialog\DialogConfirmSlotDirective.cs" />
     <Compile Include="Directives\Dialog\DialogElicitSlotDirective.cs" />
-    <Compile Include="Directives\Directive.cs" />
+    <Compile Include="Directives\VideoApp\VideoAppLaunchDirective.cs" />
     <Compile Include="Directives\VideoApp\VideoItem.cs" />
     <Compile Include="Directives\VideoApp\VideoItemMetadata.cs" />
+    <Compile Include="Directives\Directive.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
     <Compile Include="HttpHelpers.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />
@@ -98,12 +98,6 @@
     <Compile Include="Slu\Intent.cs" />
     <Compile Include="Slu\Slot.cs" />
     <Compile Include="Speechlet\AudioPlayerRequest.cs" />
-    <Compile Include="Speechlet\Context.cs" />
-    <Compile Include="Speechlet\Device.cs" />
-    <Compile Include="Speechlet\SupportedInterfaces.cs" />
-    <Compile Include="Speechlet\System.cs" />
-    <Compile Include="UI\AudioItem.cs" />
-    <Compile Include="UI\Directives.cs" />
     <Compile Include="Speechlet\Context.cs" />
     <Compile Include="Speechlet\Device.cs" />
     <Compile Include="Speechlet\Display.cs" />
@@ -124,7 +118,6 @@
     <Compile Include="Speechlet\SpeechletResponseBuilder.cs" />
     <Compile Include="Speechlet\SupportedInterfaces.cs" />
     <Compile Include="Speechlet\System.cs" />
-    <Compile Include="UI\Stream.cs" />
     <Compile Include="Speechlet\User.cs" />
     <Compile Include="UI\Image.cs" />
     <Compile Include="UI\SpeechletResponseBuilderExtentions.cs" />
