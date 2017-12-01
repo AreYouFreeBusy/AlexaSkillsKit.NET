@@ -38,7 +38,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-	  <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,8 +60,8 @@
     <Compile Include="Directives\Display\HintDirective.cs" />
     <Compile Include="Directives\Display\DisplayRenderTemplateDirective.cs" />
     <Compile Include="Directives\Display\DisplayTemplate.cs" />
-    <Compile Include="Directives\Display\Image.cs" />
-    <Compile Include="Directives\Display\ImageSource.cs" />
+    <Compile Include="Directives\Display\DisplayImage.cs" />
+    <Compile Include="Directives\Display\DisplayImageSource.cs" />
     <Compile Include="Directives\Display\ListItem.cs" />
     <Compile Include="Directives\Display\TextField.cs" />
     <Compile Include="Directives\Display\TextContent.cs" />
@@ -87,6 +87,9 @@
     <Compile Include="Sdk.cs" />
     <Compile Include="Slu\Intent.cs" />
     <Compile Include="Slu\Slot.cs" />
+    <Compile Include="Speechlet\Context.cs" />
+    <Compile Include="Speechlet\Device.cs" />
+    <Compile Include="Speechlet\Display.cs" />
     <Compile Include="Speechlet\IntentRequest.cs" />
     <Compile Include="Speechlet\ISpeechlet.cs" />
     <Compile Include="Speechlet\ISpeechletAsync.cs" />
@@ -102,6 +105,8 @@
     <Compile Include="Speechlet\SpeechletResponse.cs" />
     <Compile Include="Speechlet\Application.cs" />
     <Compile Include="Speechlet\SpeechletResponseBuilder.cs" />
+    <Compile Include="Speechlet\SupportedInterfaces.cs" />
+    <Compile Include="Speechlet\System.cs" />
     <Compile Include="Speechlet\User.cs" />
     <Compile Include="UI\Image.cs" />
     <Compile Include="UI\SpeechletResponseBuilderExtentions.cs" />

@@ -32,12 +32,12 @@ namespace AlexaSkillsKit.Directives.Display
             set;
         }
 
-        public virtual Image BackgroundImage {
+        public virtual DisplayImage BackgroundImage {
             get;
             set;
         }
 
-        public virtual Image Image {
+        public virtual DisplayImage Image {
             get;
             set;
         }

@@ -65,7 +65,8 @@ namespace AlexaSkillsKit.Json
             return new SpeechletRequestEnvelope {
                 Request = request,
                 Session = Session.FromJson(json["session"].Value<JObject>()),
-                Version = json["version"]?.Value<string>()
+                Version = json["version"]?.Value<string>(),
+                Context = Context.FromJson(json.Value<JObject>("context"))
             };
         }
         
@@ -81,6 +82,12 @@ namespace AlexaSkillsKit.Json
         }
 
         public virtual string Version {
+            get;
+            set;
+        }
+
+        public virtual Context Context
+        {
             get;
             set;
         }

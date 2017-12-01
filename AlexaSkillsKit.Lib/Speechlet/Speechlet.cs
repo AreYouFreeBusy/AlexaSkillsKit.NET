@@ -114,6 +114,7 @@ namespace AlexaSkillsKit.Speechlet
         /// <returns></returns>
         private string DoProcessRequest(SpeechletRequestEnvelope requestEnvelope) {
             Session session = requestEnvelope.Session;
+            Context context = requestEnvelope.Context;
             SpeechletResponse response = null;
 
             // process launch request
@@ -138,7 +139,11 @@ namespace AlexaSkillsKit.Speechlet
                     OnSessionStarted(
                         new SessionStartedRequest(request.RequestId, request.Timestamp), session);
                 }
-                response = OnIntent(request, session);
+                response = OnIntent(request, session, requestEnvelope.Context);
+                if(requestEnvelope.Context.System.Device == null)
+                {
+                    response.Directives = null;
+                }
             }
 
             // process session ended request
@@ -192,7 +197,7 @@ namespace AlexaSkillsKit.Speechlet
         }
 
 
-        public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session);
+        public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
         public abstract void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
         public abstract void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);
