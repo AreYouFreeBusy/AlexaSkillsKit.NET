@@ -16,31 +16,24 @@ namespace AlexaSkillsKit.Speechlet
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public static Session FromJson(JObject json)
-        {
-            if (json != null)
-            {
-                var attributes = new Dictionary<string, string>();
-                var jsonAttributes = json.Value<JObject>("attributes");
-                if (jsonAttributes != null)
-                {
-                    foreach (var attrib in jsonAttributes.Children())
-                    {
-                        attributes.Add(attrib.Value<JProperty>().Name, attrib.Value<JProperty>().Value.ToString());
-                    }
-                }
+        public static Session FromJson(JObject json) {
+            if (json == null) return null;
 
-                return new Session
-                {
-                    SessionId = json.Value<string>("sessionId"),
-                    IsNew = json.Value<bool>("new"),
-                    User = User.FromJson(json.Value<JObject>("user")),
-                    Application = Application.FromJson(json.Value<JObject>("application")),
-                    Attributes = attributes
-                };
+            var attributes = new Dictionary<string, string>();
+            var jsonAttributes = json.Value<JObject>("attributes");
+            if (jsonAttributes != null) {
+                foreach (var attrib in jsonAttributes.Children()) {
+                    attributes.Add(attrib.Value<JProperty>().Name, attrib.Value<JProperty>().Value.ToString());
+                }
             }
-            else
-                return null;
+
+            return new Session {
+                SessionId = json.Value<string>("sessionId"),
+                IsNew = json.Value<bool>("new"),
+                User = User.FromJson(json.Value<JObject>("user")),
+                Application = Application.FromJson(json.Value<JObject>("application")),
+                Attributes = attributes
+            };
         }
 
         public virtual string SessionId {

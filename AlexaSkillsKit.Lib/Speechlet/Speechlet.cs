@@ -150,7 +150,6 @@ namespace AlexaSkillsKit.Speechlet
                 Version = requestEnvelope.Version,
                 Response = response,
                 SessionAttributes = session.Attributes
-                
             };
             return responseEnvelope.ToJson();
         }

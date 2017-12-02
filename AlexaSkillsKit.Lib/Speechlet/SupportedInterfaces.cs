@@ -16,10 +16,7 @@ namespace AlexaSkillsKit.Speechlet
             Deserializer<ISpeechletInterface>.RegisterDeserializer("AudioPlayer", AudioPlayerInterface.FromJson);
         }
 
-        private SupportedInterfaces(IDictionary<string, ISpeechletInterface> dictionary) : base(dictionary) { }
-
-        public static SupportedInterfaces FromJson(JObject json)
-        {
+        public static SupportedInterfaces FromJson(JObject json) {
             if (json == null) return null;
 
             var dictionary = json?.Children<JProperty>()
@@ -27,5 +24,7 @@ namespace AlexaSkillsKit.Speechlet
 
             return new SupportedInterfaces(dictionary);
         }
+
+        private SupportedInterfaces(IDictionary<string, ISpeechletInterface> dictionary) : base(dictionary) { }
     }
 }

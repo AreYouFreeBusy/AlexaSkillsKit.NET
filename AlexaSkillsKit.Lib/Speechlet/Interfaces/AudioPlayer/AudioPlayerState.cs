@@ -5,6 +5,18 @@ namespace AlexaSkillsKit.Speechlet.Interfaces.AudioPlayer
 {
     public class AudioPlayerState : ISpeechletInterfaceState
     {
+        public static AudioPlayerState FromJson(JObject json) {
+            if (json == null) return null;
+
+            PlayerActivityEnum playerActivity = PlayerActivityEnum.NONE;
+            Enum.TryParse(json.Value<string>("playerActivity"), out playerActivity);
+            return new AudioPlayerState {
+                OffsetInMilliseconds = json.Value<long>("offsetInMilliseconds"),
+                Token = json.Value<string>("token"),
+                PlayerActivity = playerActivity
+            };
+        }
+
         public long OffsetInMilliseconds {
             get;
             private set;
@@ -18,18 +30,6 @@ namespace AlexaSkillsKit.Speechlet.Interfaces.AudioPlayer
         public PlayerActivityEnum PlayerActivity {
             get;
             private set;
-        }
-
-        public static AudioPlayerState FromJson(JObject json) {
-            if (json == null) return null;
-
-            PlayerActivityEnum playerActivity = PlayerActivityEnum.NONE;
-            Enum.TryParse(json.Value<string>("playerActivity"), out playerActivity);
-            return new AudioPlayerState {
-                OffsetInMilliseconds = json.Value<long>("offsetInMilliseconds"),
-                Token = json.Value<string>("token"),
-                PlayerActivity = playerActivity
-            };
         }
 
         public enum PlayerActivityEnum
