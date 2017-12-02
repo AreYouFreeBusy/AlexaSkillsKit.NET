@@ -1,7 +1,6 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -113,53 +112,45 @@ namespace AlexaSkillsKit.Speechlet
         /// <param name="requestEnvelope"></param>
         /// <returns></returns>
         private string DoProcessRequest(SpeechletRequestEnvelope requestEnvelope) {
-            Session session = requestEnvelope.Session;
-            Context context = requestEnvelope.Context;
-            SpeechletResponse response = null;
+            var session = requestEnvelope.Session;
+            var context = requestEnvelope.Context;
+            var request = requestEnvelope.Request;
+            ISpeechletResponse response = null;
+
+            // Do session management prior to calling OnSessionStarted and OnIntentAsync 
+            // to allow dev to change session values if behavior is not desired
+            DoSessionManagement(request as IntentRequest, session);
+
+            if (requestEnvelope.Session.IsNew) {
+                OnSessionStarted(
+                    new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
+            }
 
             // process launch request
             if (requestEnvelope.Request is LaunchRequest) {
-                var request = requestEnvelope.Request as LaunchRequest;
-                if (requestEnvelope.Session.IsNew) {
-                    OnSessionStarted(
-                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
-                }
-                response = OnLaunch(request, session);
+                response = OnLaunch(request as LaunchRequest, session);
             }
-            else if (requestEnvelope.Request is AudioPlayerRequest)
-            {
-                var request = requestEnvelope.Request as AudioPlayerRequest;
-                response = OnAudioIntent(request, context);
+
+            // process audio palyer request
+            else if (requestEnvelope.Request is AudioPlayerRequest) {
+                response = OnAudioPlayer(request as AudioPlayerRequest, session, context);
             }
+
             // process intent request
             else if (requestEnvelope.Request is IntentRequest) {
-                var request = requestEnvelope.Request as IntentRequest;
-
-                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
-                // to allow dev to change session values if behavior is not desired
-                DoSessionManagement(request, session);
-
-                if (requestEnvelope.Session.IsNew) {
-                    OnSessionStarted(
-                        new SessionStartedRequest(request.RequestId, request.Timestamp), session);
-                }
-                response = OnIntent(request, session, requestEnvelope.Context);
-                if(requestEnvelope.Context.System.Device == null)
-                {
-                    response.Directives = null;
-                }
+                response = OnIntent(request as IntentRequest, session, context);
             }
 
             // process session ended request
             else if (requestEnvelope.Request is SessionEndedRequest) {
-                var request = requestEnvelope.Request as SessionEndedRequest;
-                OnSessionEnded(request, session);
+                OnSessionEnded(request as SessionEndedRequest, session);
             }
 
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
                 Response = response,
-                SessionAttributes = session?.Attributes ?? new Dictionary<string, string>()//requestEnvelope.Session?.Attributes
+                SessionAttributes = session.Attributes
+                
             };
             return responseEnvelope.ToJson();
         }
@@ -169,6 +160,8 @@ namespace AlexaSkillsKit.Speechlet
         /// 
         /// </summary>
         private void DoSessionManagement(IntentRequest request, Session session) {
+            if (request == null) return;
+
             if (session.IsNew) {
                 session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
             }
@@ -201,9 +194,9 @@ namespace AlexaSkillsKit.Speechlet
         }
 
 
+        public abstract AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Session session, Context context);
         public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
-        public abstract SpeechletResponse OnAudioIntent(AudioPlayerRequest audioRequest, Context context);
         public abstract void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
         public abstract void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);
     }

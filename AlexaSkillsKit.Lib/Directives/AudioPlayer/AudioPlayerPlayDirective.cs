@@ -1,11 +1,13 @@
-﻿namespace AlexaSkillsKit.Directives.AudioPlayer
+﻿using AlexaSkillsKit.Speechlet;
+
+namespace AlexaSkillsKit.Directives.AudioPlayer
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#play
     /// </summary>
-    public class AudioPlayerPlayDirective : Directive
+    public class AudioPlayerPlayDirective : AudioPlayerDirective
     {
-        public AudioPlayerPlayDirective() : base("AudioPlayer.Play") {
+        public AudioPlayerPlayDirective() : base("Play") {
 
         }
 

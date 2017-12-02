@@ -5,7 +5,7 @@
     /// </summary>
     public class DialogConfirmIntentDirective : DialogDirective
     {
-        public DialogConfirmIntentDirective() : base("Dialog.ConfirmIntent") {
+        public DialogConfirmIntentDirective() : base("ConfirmIntent") {
 
         }
     }

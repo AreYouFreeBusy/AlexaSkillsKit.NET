@@ -1,11 +1,13 @@
-﻿namespace AlexaSkillsKit.Directives.AudioPlayer
+﻿using AlexaSkillsKit.Speechlet;
+
+namespace AlexaSkillsKit.Directives.AudioPlayer
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#clearqueue
     /// </summary>
-    public class AudioPlayerClearQueueDirective : Directive
+    public class AudioPlayerClearQueueDirective : AudioPlayerDirective
     {
-        public AudioPlayerClearQueueDirective() : base("AudioPlayer.ClearQueue") {
+        public AudioPlayerClearQueueDirective() : base("ClearQueue") {
 
         }
 

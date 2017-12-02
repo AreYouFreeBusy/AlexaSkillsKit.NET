@@ -1,4 +1,6 @@
-﻿namespace AlexaSkillsKit.Directives.Display
+﻿using AlexaSkillsKit.Speechlet;
+
+namespace AlexaSkillsKit.Directives.Display
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/display-interface-reference.html#form-of-the-displayrendertemplate-directive

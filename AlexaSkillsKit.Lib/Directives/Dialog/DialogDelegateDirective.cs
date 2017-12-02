@@ -5,7 +5,7 @@
     /// </summary>
     public class DialogDelegateDirective : DialogDirective
     {
-        public DialogDelegateDirective() : base("Dialog.Delegate") {
+        public DialogDelegateDirective() : base("Delegate") {
 
         }
     }

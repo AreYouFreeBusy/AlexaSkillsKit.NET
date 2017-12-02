@@ -1,4 +1,5 @@
 ﻿using AlexaSkillsKit.Slu;
+using AlexaSkillsKit.Speechlet;
 
 namespace AlexaSkillsKit.Directives.Dialog
 {
@@ -7,7 +8,7 @@ namespace AlexaSkillsKit.Directives.Dialog
     /// </summary>
     public class DialogDirective: Directive
     {
-        public DialogDirective(string type) : base(type) {
+        public DialogDirective(string subtype) : base($"Dialog.{subtype}") {
 
         }
 

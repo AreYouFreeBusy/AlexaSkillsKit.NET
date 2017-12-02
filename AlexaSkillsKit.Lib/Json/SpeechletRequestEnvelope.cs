@@ -1,7 +1,6 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AlexaSkillsKit.Helpers;
@@ -38,33 +37,34 @@ namespace AlexaSkillsKit.Json
             }
 
             SpeechletRequest request;
-            JObject requestJson = json.Value<JObject>("request");
-            string requestType = requestJson.Value<string>("type");
-            string requestId = requestJson.Value<string>("requestId");
-            DateTime timestamp = DateTimeHelpers.FromAlexaTimestamp(requestJson);
-            string token = requestJson.Value<string>("token");
-            long offset = requestJson.Value<long>("offsetInMilliseconds");
-            string type = requestJson.Value<string>("type");
+            var requestJson = json.Value<JObject>("request");
+            var requestType = requestJson?.Value<string>("type");
+            var requestId = requestJson?.Value<string>("requestId");
+            var timestamp = DateTimeHelpers.FromAlexaTimestamp(requestJson);
+            var locale = requestJson?.Value<string>("locale");
             switch (requestType) {
                 case "LaunchRequest":
-                    request = new LaunchRequest(requestId, timestamp);
+                    request = new LaunchRequest(requestId, timestamp, locale);
                     break;
                 case "IntentRequest":
-                    request = new IntentRequest(requestId, timestamp, 
-                        Intent.FromJson(requestJson.Value<JObject>("intent")));
+                    IntentRequest.DialogStateEnum dialogState = IntentRequest.DialogStateEnum.NONE;
+                    Enum.TryParse(requestJson.Value<string>("dialogState"), out dialogState);
+                    var intent = Intent.FromJson(requestJson.Value<JObject>("intent"));
+                    request = new IntentRequest(requestId, timestamp, locale, intent, dialogState);
                     break;
                 case "SessionStartedRequest":
-                    request = new SessionStartedRequest(requestId, timestamp);
+                    request = new SessionStartedRequest(requestId, timestamp, locale);
                     break;
                 case "SessionEndedRequest":
-                    SessionEndedRequest.ReasonEnum reason;
-                    Enum.TryParse<SessionEndedRequest.ReasonEnum>(requestJson.Value<string>("reason"), out reason);
-                    request = new SessionEndedRequest(requestId, timestamp, reason);
+                    SessionEndedRequest.ReasonEnum reason = SessionEndedRequest.ReasonEnum.NONE;
+                    Enum.TryParse(requestJson.Value<string>("reason"), out reason);
+                    request = new SessionEndedRequest(requestId, timestamp, locale, reason);
                     break;
                 default:
-                    if (requestType.StartsWith("PlaybackController") || requestType.StartsWith("AudioPlayer"))
-                    {
-                        request = new AudioPlayerRequest(requestId, timestamp, token, offset, type);
+                    if (requestType.StartsWith("PlaybackController") || requestType.StartsWith("AudioPlayer")) {
+                        var token = requestJson?.Value<string>("token");
+                        var offset = requestJson?.Value<long>("offsetInMilliseconds") ?? 0;
+                        request = new AudioPlayerRequest(requestId, timestamp, locale, token, offset, requestType);
                     }
                     else if (requestType == "System.ExceptionEncountered")
                         request = null;
@@ -80,7 +80,7 @@ namespace AlexaSkillsKit.Json
                 Context = Context.FromJson(json.Value<JObject>("context"))
             };
         }
-        
+
 
         public virtual SpeechletRequest Request {
             get;
@@ -97,8 +97,7 @@ namespace AlexaSkillsKit.Json
             set;
         }
 
-        public virtual Context Context
-        {
+        public virtual Context Context {
             get;
             set;
         }

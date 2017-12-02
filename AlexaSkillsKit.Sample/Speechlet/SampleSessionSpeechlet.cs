@@ -6,10 +6,7 @@ using NLog;
 using AlexaSkillsKit.Speechlet;
 using AlexaSkillsKit.Slu;
 using AlexaSkillsKit.UI;
-using AlexaSkillsKit.Authentication;
-using AlexaSkillsKit.Json;
 using AlexaSkillsKit.Directives.Display;
-using AlexaSkillsKit.Directives;
 using AlexaSkillsKit.Directives.VideoApp;
 
 namespace Sample.Controllers
@@ -23,7 +20,7 @@ namespace Sample.Controllers
         private const string NAME_SLOT = "Name";
 
 
-        public override SpeechletResponse OnAudioIntent(AudioPlayerRequest audioRequest, Context context)
+        public override AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Session session, Context context)
         {
             throw new NotImplementedException();
         }

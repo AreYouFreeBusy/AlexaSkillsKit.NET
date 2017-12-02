@@ -1,4 +1,6 @@
-﻿namespace AlexaSkillsKit.Directives.VideoApp
+﻿using AlexaSkillsKit.Speechlet;
+
+namespace AlexaSkillsKit.Directives.VideoApp
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/videoapp-interface-reference.html#videoapp-directives

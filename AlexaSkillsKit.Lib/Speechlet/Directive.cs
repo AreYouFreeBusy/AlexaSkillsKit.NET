@@ -1,4 +1,4 @@
-﻿namespace AlexaSkillsKit.Directives
+﻿namespace AlexaSkillsKit.Speechlet
 {
     public class Directive
     {

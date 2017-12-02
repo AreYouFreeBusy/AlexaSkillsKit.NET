@@ -1,12 +1,14 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using AlexaSkillsKit.Directives;
 using AlexaSkillsKit.UI;
 using System.Collections.Generic;
 
 namespace AlexaSkillsKit.Speechlet
 {
-    public class SpeechletResponse
+    /// <summary>
+    /// https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#response-object
+    /// </summary>
+    public class SpeechletResponse : ISpeechletResponse
     {
         public virtual Card Card {
             get;

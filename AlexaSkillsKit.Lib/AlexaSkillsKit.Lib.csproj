@@ -31,15 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Azure|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Azure\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
@@ -78,7 +69,6 @@
     <Compile Include="Directives\Display\ListItem.cs" />
     <Compile Include="Directives\Display\TextField.cs" />
     <Compile Include="Directives\Display\TextContent.cs" />
-    <Compile Include="Directives\Dialog\SpeechletResponseBuilderExtentions.cs" />
     <Compile Include="Directives\Dialog\DialogConfirmIntentDirective.cs" />
     <Compile Include="Directives\Dialog\DialogDelegateDirective.cs" />
     <Compile Include="Directives\Dialog\DialogDirective.cs" />
@@ -87,24 +77,30 @@
     <Compile Include="Directives\VideoApp\VideoAppLaunchDirective.cs" />
     <Compile Include="Directives\VideoApp\VideoItem.cs" />
     <Compile Include="Directives\VideoApp\VideoItemMetadata.cs" />
-    <Compile Include="Directives\Directive.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
     <Compile Include="HttpHelpers.cs" />
+    <Compile Include="Json\Deserializer.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />
     <Compile Include="Json\SpeechletResponseEnvelope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sdk.cs" />
-    <Compile Include="Slu\AudioPlayer.cs" />
     <Compile Include="Slu\Intent.cs" />
     <Compile Include="Slu\Slot.cs" />
+    <Compile Include="Speechlet\AudioPlayerDirective.cs" />
     <Compile Include="Speechlet\AudioPlayerRequest.cs" />
+    <Compile Include="Speechlet\AudioPlayerResponse.cs" />
     <Compile Include="Speechlet\Context.cs" />
     <Compile Include="Speechlet\Device.cs" />
-    <Compile Include="Speechlet\Display.cs" />
+    <Compile Include="Speechlet\Directive.cs" />
+    <Compile Include="Speechlet\Interfaces\AudioPlayer\AudioPlayerInterface.cs" />
+    <Compile Include="Speechlet\Interfaces\AudioPlayer\AudioPlayerState.cs" />
+    <Compile Include="Speechlet\Interfaces\Display\DisplayInterface.cs" />
     <Compile Include="Speechlet\IntentRequest.cs" />
+    <Compile Include="Speechlet\ISpeechletInterface.cs" />
+    <Compile Include="Speechlet\ISpeechletInterfaceState.cs" />
     <Compile Include="Speechlet\ISpeechlet.cs" />
     <Compile Include="Speechlet\ISpeechletAsync.cs" />
-    <Compile Include="Speechlet\ISpeechletResponseBuilder.cs" />
+    <Compile Include="Speechlet\ISpeechletResponse.cs" />
     <Compile Include="Speechlet\LaunchRequest.cs" />
     <Compile Include="Speechlet\Session.cs" />
     <Compile Include="Speechlet\SessionEndedRequest.cs" />
@@ -115,12 +111,10 @@
     <Compile Include="Speechlet\SpeechletRequest.cs" />
     <Compile Include="Speechlet\SpeechletResponse.cs" />
     <Compile Include="Speechlet\Application.cs" />
-    <Compile Include="Speechlet\SpeechletResponseBuilder.cs" />
     <Compile Include="Speechlet\SupportedInterfaces.cs" />
-    <Compile Include="Speechlet\System.cs" />
+    <Compile Include="Speechlet\SystemState.cs" />
     <Compile Include="Speechlet\User.cs" />
     <Compile Include="UI\Image.cs" />
-    <Compile Include="UI\SpeechletResponseBuilderExtentions.cs" />
     <Compile Include="UI\StandardCard.cs" />
     <Compile Include="UI\SsmlOutputSpeech.cs" />
     <Compile Include="UI\Reprompt.cs" />

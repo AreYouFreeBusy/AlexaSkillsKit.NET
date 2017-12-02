@@ -7,8 +7,8 @@ namespace AlexaSkillsKit.Speechlet
 {
     public class IntentRequest : SpeechletRequest
     {
-        public IntentRequest(string requestId, DateTime timestamp, Intent intent)  
-            : base(requestId, timestamp) {
+        public IntentRequest(string requestId, DateTime timestamp, string locale, Intent intent, DialogStateEnum dialogState)  
+            : base(requestId, timestamp, locale) {
 
             Intent = intent;
         }
@@ -26,6 +26,7 @@ namespace AlexaSkillsKit.Speechlet
 
         public enum DialogStateEnum
         {
+            NONE = 0, // default in case parsing fails
             STARTED,
             IN_PROGRESS,
             COMPLETED

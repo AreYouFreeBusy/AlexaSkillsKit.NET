@@ -10,7 +10,8 @@ namespace AlexaSkillsKit.Speechlet
     {
         bool OnRequestValidation(
             SpeechletRequestValidationResult result, DateTime referenceTimeUtc, SpeechletRequestEnvelope requestEnvelope);
-        
+
+        AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Session session, Context context);
         SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
         void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
