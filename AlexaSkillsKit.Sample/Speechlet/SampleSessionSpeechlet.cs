@@ -6,8 +6,10 @@ using NLog;
 using AlexaSkillsKit.Speechlet;
 using AlexaSkillsKit.Slu;
 using AlexaSkillsKit.UI;
-using AlexaSkillsKit.Directives.Display;
-using AlexaSkillsKit.Directives.VideoApp;
+using AlexaSkillsKit.Interfaces.Display;
+using AlexaSkillsKit.Interfaces.VideoApp;
+using AlexaSkillsKit.Interfaces.Display.Directives;
+using AlexaSkillsKit.Interfaces.VideoApp.Directives;
 
 namespace Sample.Controllers
 {
@@ -20,8 +22,15 @@ namespace Sample.Controllers
         private const string NAME_SLOT = "Name";
 
 
-        public override AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Session session, Context context)
-        {
+        public override AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
+        public override void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
+        public override AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context) {
             throw new NotImplementedException();
         }
 

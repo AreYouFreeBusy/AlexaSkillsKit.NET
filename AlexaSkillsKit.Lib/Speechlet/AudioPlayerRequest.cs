@@ -4,15 +4,13 @@ namespace AlexaSkillsKit.Speechlet
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#requests
-    /// https://developer.amazon.com/docs/custom-skills/playback-controller-interface-reference.html#requests
     /// </summary>
-    public class AudioPlayerRequest : SpeechletRequest
+    public class AudioPlayerRequest : ExtendedSpeechletRequest
     {
-        public AudioPlayerRequest(string requestId, DateTime timestamp, string locale, string token, long offsetInMilliseconds, string type)
-            : base(requestId, timestamp, locale) {
+        public AudioPlayerRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, long offsetInMilliseconds)
+            : base(requestId, timestamp, locale, subtype) {
             Token = token;
             OffsetInMilliseconds = offsetInMilliseconds;
-            Type = type;
         }
 
         public string Token {
@@ -20,12 +18,7 @@ namespace AlexaSkillsKit.Speechlet
             private set;
         }
 
-        public long OffsetInMilliseconds {
-            get;
-            private set;
-        }
-
-        public string Type {
+        public long? OffsetInMilliseconds {
             get;
             private set;
         }

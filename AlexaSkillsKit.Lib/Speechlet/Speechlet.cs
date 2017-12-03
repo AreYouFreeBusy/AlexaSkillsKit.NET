@@ -131,9 +131,19 @@ namespace AlexaSkillsKit.Speechlet
                 response = OnLaunch(request as LaunchRequest, session);
             }
 
-            // process audio palyer request
+            // process audio player request
             else if (requestEnvelope.Request is AudioPlayerRequest) {
-                response = OnAudioPlayer(request as AudioPlayerRequest, session, context);
+                response = OnAudioPlayer(request as AudioPlayerRequest, context);
+            }
+
+            // process playback controller request
+            else if (requestEnvelope.Request is PlaybackControllerRequest) {
+                response = OnPlaybackController(request as PlaybackControllerRequest, context);
+            }
+
+            // process system request
+            else if (requestEnvelope.Request is SystemExceptionEncounteredRequest) {
+                OnSystemExceptionEncountered(request as SystemExceptionEncounteredRequest, context);
             }
 
             // process intent request
@@ -192,8 +202,10 @@ namespace AlexaSkillsKit.Speechlet
             return result == SpeechletRequestValidationResult.OK;
         }
 
+        public abstract AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context);
+        public abstract AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context);
+        public abstract void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context);
 
-        public abstract AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Session session, Context context);
         public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
         public abstract void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);

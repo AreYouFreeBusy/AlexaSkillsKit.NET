@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Linq;
-using AlexaSkillsKit.Speechlet.Interfaces.Display;
-using AlexaSkillsKit.Speechlet.Interfaces.AudioPlayer;
+using AlexaSkillsKit.Interfaces.Display;
+using AlexaSkillsKit.Interfaces.AudioPlayer;
 
 namespace AlexaSkillsKit.Speechlet
 {
+    /// <summary>
+    /// https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#system-object
+    /// </summary>
     public class SupportedInterfaces : Dictionary<string, ISpeechletInterface>
     {
         /// <summary>

@@ -38,7 +38,14 @@ namespace AlexaSkillsKit.Json
 
             SpeechletRequest request;
             var requestJson = json.Value<JObject>("request");
-            var requestType = requestJson?.Value<string>("type");
+            var requestTypeParts = requestJson?.Value<string>("type")?.Split('.');
+            if (requestTypeParts == null) {
+                throw new ArgumentException("json");
+            }
+
+            var requestType = requestTypeParts[0];
+            var requestSubType = requestTypeParts.Length > 1 ? requestTypeParts[1] : null;
+
             var requestId = requestJson?.Value<string>("requestId");
             var timestamp = DateTimeHelpers.FromAlexaTimestamp(requestJson);
             var locale = requestJson?.Value<string>("locale");
@@ -60,17 +67,36 @@ namespace AlexaSkillsKit.Json
                     Enum.TryParse(requestJson.Value<string>("reason"), out reason);
                     request = new SessionEndedRequest(requestId, timestamp, locale, reason);
                     break;
-                default:
-                    if (requestType.StartsWith("PlaybackController") || requestType.StartsWith("AudioPlayer")) {
-                        var token = requestJson?.Value<string>("token");
-                        var offset = requestJson?.Value<long>("offsetInMilliseconds") ?? 0;
-                        request = new AudioPlayerRequest(requestId, timestamp, locale, token, offset, requestType);
+                case "AudioPlayer":
+                    var token = requestJson?.Value<string>("token");
+                    var offset = requestJson?.Value<long>("offsetInMilliseconds") ?? 0;
+                    var playbackError = Error.FromJson(requestJson?.Value<JObject>("error"));
+                    var currentPlaybackState = PlaybackState.FromJson(requestJson?.Value<JObject>("currentPlaybackState"));
+                    switch (requestSubType) {
+                        case "PlaybackFailed":
+                            request = new AudioPlayerPlaybackFailedRequest(requestId, timestamp, locale, requestSubType, token, playbackError, currentPlaybackState);
+                            break;
+                        default:
+                            request = new AudioPlayerRequest(requestId, timestamp, locale, requestSubType, token, offset);
+                            break;
                     }
-                    else if (requestType == "System.ExceptionEncountered")
-                        request = null;
-                    else
-                        throw new ArgumentException("json");
                     break;
+                case "PlaybackController":
+                    request = new PlaybackControllerRequest(requestId, timestamp, locale, requestType);
+                    break;
+                case "System":
+                    switch (requestSubType) {
+                        case "ExceptionEncountered":
+                            var error = Error.FromJson(requestJson?.Value<JObject>("error"));
+                            var cause = Cause.FromJson(requestJson?.Value<JObject>("cause"));
+                            request = new SystemExceptionEncounteredRequest(requestId, timestamp, locale, requestSubType, error, cause);
+                            break;
+                        default:
+                            throw new ArgumentException("json");
+                    }
+                    break;
+                default:
+                    throw new ArgumentException("json");
             }
 
             return new SpeechletRequestEnvelope {

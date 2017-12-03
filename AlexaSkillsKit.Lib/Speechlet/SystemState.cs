@@ -2,6 +2,9 @@
 
 namespace AlexaSkillsKit.Speechlet
 {
+    /// <summary>
+    /// https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#system-object
+    /// </summary>
     public class SystemState : ISpeechletInterfaceState
     {
         public static SystemState FromJson(JObject json) {
