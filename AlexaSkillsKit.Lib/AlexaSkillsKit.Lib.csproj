@@ -122,6 +122,7 @@
     <Compile Include="Speechlet\SystemState.cs" />
     <Compile Include="Speechlet\User.cs" />
     <Compile Include="UI\Image.cs" />
+    <Compile Include="UI\AskForPermissionsConsentCard.cs" />
     <Compile Include="UI\StandardCard.cs" />
     <Compile Include="UI\SsmlOutputSpeech.cs" />
     <Compile Include="UI\Reprompt.cs" />
