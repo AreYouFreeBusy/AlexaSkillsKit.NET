@@ -147,6 +147,10 @@ namespace Sample.Controllers
          */
         private SpeechletResponse BuildSpeechletResponse(string title, string output, bool shouldEndSession) {
             // Create the Simple card content.
+            var consentCard = new AskForPermissionsConsentCard();
+            consentCard.PermissionType = PermissionType.CountryAndPostalCode;
+
+
             SimpleCard card = new SimpleCard();
             card.Title = String.Format("SessionSpeechlet - {0}", title);
             card.Subtitle = String.Format("SessionSpeechlet - Sub Title");

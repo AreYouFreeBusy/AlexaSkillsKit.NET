@@ -64,6 +64,8 @@
     <Compile Include="Sdk.cs" />
     <Compile Include="Slu\Intent.cs" />
     <Compile Include="Slu\Slot.cs" />
+    <Compile Include="Speechlet\Context.cs" />
+    <Compile Include="Speechlet\Device.cs" />
     <Compile Include="Speechlet\IntentRequest.cs" />
     <Compile Include="Speechlet\ISpeechlet.cs" />
     <Compile Include="Speechlet\ISpeechletAsync.cs" />
@@ -77,7 +79,9 @@
     <Compile Include="Speechlet\SpeechletRequest.cs" />
     <Compile Include="Speechlet\SpeechletResponse.cs" />
     <Compile Include="Speechlet\Application.cs" />
+    <Compile Include="Speechlet\System.cs" />
     <Compile Include="Speechlet\User.cs" />
+    <Compile Include="UI\AskForPermissionsConsentCard.cs" />
     <Compile Include="UI\Image.cs" />
     <Compile Include="UI\StandardCard.cs" />
     <Compile Include="UI\SsmlOutputSpeech.cs" />
