@@ -11,6 +11,7 @@ namespace AlexaSkillsKit.Speechlet
             : base(requestId, timestamp, locale) {
 
             Intent = intent;
+            DialogState = dialogState;
         }
 
         public virtual Intent Intent {
