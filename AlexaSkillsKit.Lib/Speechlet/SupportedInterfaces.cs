@@ -22,7 +22,7 @@ namespace AlexaSkillsKit.Speechlet
         public static SupportedInterfaces FromJson(JObject json) {
             if (json == null) return null;
 
-            var dictionary = json?.Children<JProperty>()
+            var dictionary = json.Children<JProperty>()
                 .ToDictionary(x => x.Name, x => Deserializer<ISpeechletInterface>.FromJson(x));
 
             return new SupportedInterfaces(dictionary);

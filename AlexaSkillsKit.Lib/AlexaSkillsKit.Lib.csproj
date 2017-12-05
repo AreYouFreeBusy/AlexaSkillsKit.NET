@@ -87,7 +87,13 @@
     <Compile Include="Json\SpeechletResponseEnvelope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sdk.cs" />
+    <Compile Include="Slu\ConfirmationStatusEnum.cs" />
     <Compile Include="Slu\Intent.cs" />
+    <Compile Include="Slu\Resolutions.cs" />
+    <Compile Include="Slu\ResolutionsPerAuthority.cs" />
+    <Compile Include="Slu\ResolutionsPerAuthorityStatus.cs" />
+    <Compile Include="Slu\ResolutionsPerAuthorityValue.cs" />
+    <Compile Include="Slu\ResolutionsPerAuthorityValueValue.cs" />
     <Compile Include="Slu\Slot.cs" />
     <Compile Include="Speechlet\AudioPlayerDirective.cs" />
     <Compile Include="Speechlet\Cause.cs" />

@@ -97,7 +97,7 @@ namespace Sample.Controllers
          */
         private SpeechletResponse SetNameInSessionAndSayHello(Intent intent, Session session) {
             // Get the slots from the intent.
-            Dictionary<string, Slot> slots = intent.Slots;
+            IDictionary<string, Slot> slots = intent.Slots;
 
             // Get the name slot from the list slots.
             Slot nameSlot = slots[NAME_SLOT];
