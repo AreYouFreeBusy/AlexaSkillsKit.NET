@@ -13,6 +13,7 @@ namespace AlexaSkillsKit.Speechlet
 
         AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context);
         AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context);
+        SpeechletResponse OnDisplay(DisplayRequest displayRequest, Context context);
         void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context);
 
         SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);

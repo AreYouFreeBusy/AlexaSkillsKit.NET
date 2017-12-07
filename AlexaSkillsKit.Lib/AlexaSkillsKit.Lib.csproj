@@ -96,6 +96,7 @@
     <Compile Include="Slu\ResolutionsPerAuthorityValueValue.cs" />
     <Compile Include="Slu\Slot.cs" />
     <Compile Include="Speechlet\AudioPlayerDirective.cs" />
+    <Compile Include="Speechlet\DisplayRequest.cs" />
     <Compile Include="Speechlet\Cause.cs" />
     <Compile Include="Speechlet\SystemExceptionEncounteredRequest.cs" />
     <Compile Include="Speechlet\AudioPlayerPlaybackFailedRequest.cs" />

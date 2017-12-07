@@ -141,6 +141,11 @@ namespace AlexaSkillsKit.Speechlet
                 response = OnPlaybackController(request as PlaybackControllerRequest, context);
             }
 
+            // process display request
+            else if (requestEnvelope.Request is DisplayRequest) {
+                response = OnDisplay(request as DisplayRequest, context);
+            }
+
             // process system request
             else if (requestEnvelope.Request is SystemExceptionEncounteredRequest) {
                 OnSystemExceptionEncountered(request as SystemExceptionEncounteredRequest, context);
@@ -204,6 +209,7 @@ namespace AlexaSkillsKit.Speechlet
 
         public abstract AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context);
         public abstract AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context);
+        public abstract SpeechletResponse OnDisplay(DisplayRequest displayRequest, Context context);
         public abstract void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context);
 
         public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);

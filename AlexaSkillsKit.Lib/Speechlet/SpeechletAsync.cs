@@ -142,6 +142,11 @@ namespace AlexaSkillsKit.Speechlet
                 response = await OnPlaybackControllerAsync(request as PlaybackControllerRequest, context);
             }
 
+            // process display request
+            else if (requestEnvelope.Request is DisplayRequest) {
+                response = await OnDisplayAsync(request as DisplayRequest, context);
+            }
+
             // process system request
             else if (requestEnvelope.Request is SystemExceptionEncounteredRequest) {
                 await OnSystemExceptionEncounteredAsync(request as SystemExceptionEncounteredRequest, context);
@@ -206,6 +211,7 @@ namespace AlexaSkillsKit.Speechlet
 
         public abstract Task<AudioPlayerResponse> OnAudioPlayerAsync(AudioPlayerRequest audioRequest, Context context);
         public abstract Task<AudioPlayerResponse> OnPlaybackControllerAsync(PlaybackControllerRequest playbackRequest, Context context);
+        public abstract Task<SpeechletResponse> OnDisplayAsync(DisplayRequest displayRequest, Context context);
         public abstract Task OnSystemExceptionEncounteredAsync(SystemExceptionEncounteredRequest systemRequest, Context context);
 
         public abstract Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session, Context context);

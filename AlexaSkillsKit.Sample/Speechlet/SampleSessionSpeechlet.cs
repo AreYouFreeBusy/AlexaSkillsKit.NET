@@ -34,6 +34,10 @@ namespace Sample.Controllers
             throw new NotImplementedException();
         }
 
+        public override SpeechletResponse OnDisplay(DisplayRequest displayRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
         public override void OnSessionStarted(SessionStartedRequest request, Session session) {            
             Log.Info("OnSessionStarted requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }

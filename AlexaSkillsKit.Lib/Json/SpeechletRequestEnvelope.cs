@@ -82,7 +82,11 @@ namespace AlexaSkillsKit.Json
                     }
                     break;
                 case "PlaybackController":
-                    request = new PlaybackControllerRequest(requestId, timestamp, locale, requestType);
+                    request = new PlaybackControllerRequest(requestId, timestamp, locale, requestSubType);
+                    break;
+                case "Display":
+                    var listItemToken = requestJson?.Value<string>("token");
+                    request = new DisplayRequest(requestId, timestamp, locale, requestSubType, listItemToken);
                     break;
                 case "System":
                     switch (requestSubType) {
