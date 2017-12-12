@@ -17,6 +17,8 @@ namespace AlexaSkillsKit.Speechlet
         /// <param name="json"></param>
         /// <returns></returns>
         public static Session FromJson(JObject json) {
+            if (json == null) return null;
+
             var attributes = new Dictionary<string, string>();
             var jsonAttributes = json.Value<JObject>("attributes");
             if (jsonAttributes != null) {

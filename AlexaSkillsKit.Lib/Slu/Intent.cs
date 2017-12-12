@@ -1,12 +1,15 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace AlexaSkillsKit.Slu
 {
+    /// <summary>
+    /// https://developer.amazon.com/docs/custom-skills/request-types-reference.html#intent-object
+    /// </summary>
     public class Intent
     {
         /// <summary>
@@ -15,15 +18,16 @@ namespace AlexaSkillsKit.Slu
         /// <param name="json"></param>
         /// <returns></returns>
         public static Intent FromJson(JObject json) {
-            var slots = new Dictionary<string, Slot>();
-            if (json["slots"] != null && json.Value<JObject>("slots").HasValues) {
-                foreach (var slot in json.Value<JObject>("slots").Children()) {
-                    slots.Add(slot.Value<JProperty>().Name, Slot.FromJson(slot.Value<JProperty>().Value as JObject));
-                }
-            }
+            if (json == null) return null;
+
+            var slots = json.Value<JObject>("slots")?.Children<JProperty>()
+                .ToDictionary(x => x.Name, x => Slot.FromJson(x.Value as JObject));
+            ConfirmationStatusEnum confirmationStatus;
+            Enum.TryParse(json.Value<string>("confirmationStatus"), out confirmationStatus);
 
             return new Intent {
                 Name = json.Value<string>("name"),
+                ConfirmationStatus = confirmationStatus,
                 Slots = slots
             };
         }
@@ -33,7 +37,12 @@ namespace AlexaSkillsKit.Slu
             set;
         }
 
-        public virtual Dictionary<string, Slot> Slots {
+        public virtual ConfirmationStatusEnum ConfirmationStatus {
+            get;
+            set;
+        }
+
+        public virtual IDictionary<string, Slot> Slots {
             get;
             set;
         }

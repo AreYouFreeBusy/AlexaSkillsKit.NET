@@ -1,7 +1,6 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -113,44 +112,61 @@ namespace AlexaSkillsKit.Speechlet
         /// <param name="requestEnvelope"></param>
         /// <returns></returns>
         private string DoProcessRequest(SpeechletRequestEnvelope requestEnvelope) {
-            Session session = requestEnvelope.Session;
-            SpeechletResponse response = null;
+            var session = requestEnvelope.Session;
+            var context = requestEnvelope.Context;
+            var request = requestEnvelope.Request;
+            ISpeechletResponse response = null;
 
-            // process launch request
-            if (requestEnvelope.Request is LaunchRequest) {
-                var request = requestEnvelope.Request as LaunchRequest;
-                if (requestEnvelope.Session.IsNew) {
+            if (session != null) {
+                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
+                // to allow dev to change session values if behavior is not desired
+                DoSessionManagement(request as IntentRequest, session);
+
+                if (session.IsNew) {
                     OnSessionStarted(
                         new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
                 }
-                response = OnLaunch(request, session);
+            }
+
+            // process launch request
+            if (requestEnvelope.Request is LaunchRequest) {
+                response = OnLaunch(request as LaunchRequest, session);
+            }
+
+            // process audio player request
+            else if (requestEnvelope.Request is AudioPlayerRequest) {
+                response = OnAudioPlayer(request as AudioPlayerRequest, context);
+            }
+
+            // process playback controller request
+            else if (requestEnvelope.Request is PlaybackControllerRequest) {
+                response = OnPlaybackController(request as PlaybackControllerRequest, context);
+            }
+
+            // process display request
+            else if (requestEnvelope.Request is DisplayRequest) {
+                response = OnDisplay(request as DisplayRequest, context);
+            }
+
+            // process system request
+            else if (requestEnvelope.Request is SystemExceptionEncounteredRequest) {
+                OnSystemExceptionEncountered(request as SystemExceptionEncounteredRequest, context);
             }
 
             // process intent request
             else if (requestEnvelope.Request is IntentRequest) {
-                var request = requestEnvelope.Request as IntentRequest;
-
-                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
-                // to allow dev to change session values if behavior is not desired
-                DoSessionManagement(request, session);
-
-                if (requestEnvelope.Session.IsNew) {
-                    OnSessionStarted(
-                        new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
-                }
-                response = OnIntent(request, session);
+                response = OnIntent(request as IntentRequest, session, context);
             }
 
             // process session ended request
             else if (requestEnvelope.Request is SessionEndedRequest) {
-                var request = requestEnvelope.Request as SessionEndedRequest;
-                OnSessionEnded(request, session);
+                OnSessionEnded(request as SessionEndedRequest, session);
             }
 
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
                 Response = response,
-                SessionAttributes = requestEnvelope.Session.Attributes
+                SessionAttributes = session?.Attributes
             };
             return responseEnvelope.ToJson();
         }
@@ -160,6 +176,8 @@ namespace AlexaSkillsKit.Speechlet
         /// 
         /// </summary>
         private void DoSessionManagement(IntentRequest request, Session session) {
+            if (request == null) return;
+
             if (session.IsNew) {
                 session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
             }
@@ -191,8 +209,12 @@ namespace AlexaSkillsKit.Speechlet
             return result == SpeechletRequestValidationResult.OK;
         }
 
+        public abstract AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context);
+        public abstract AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context);
+        public abstract SpeechletResponse OnDisplay(DisplayRequest displayRequest, Context context);
+        public abstract void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context);
 
-        public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session);
+        public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
         public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
         public abstract void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
         public abstract void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);

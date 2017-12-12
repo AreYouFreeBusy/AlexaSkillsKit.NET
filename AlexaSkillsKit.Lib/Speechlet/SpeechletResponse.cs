@@ -1,13 +1,21 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using System;
 using AlexaSkillsKit.UI;
+using System.Collections.Generic;
 
 namespace AlexaSkillsKit.Speechlet
 {
-    public class SpeechletResponse
+    /// <summary>
+    /// https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#response-object
+    /// </summary>
+    public class SpeechletResponse : ISpeechletResponse
     {
         public virtual Card Card {
+            get;
+            set;
+        }
+
+        public virtual IEnumerable<Directive> Directives {
             get;
             set;
         }
@@ -22,7 +30,7 @@ namespace AlexaSkillsKit.Speechlet
             set;
         }
 
-        public virtual bool ShouldEndSession {
+        public virtual bool? ShouldEndSession {
             get;
             set;
         }
