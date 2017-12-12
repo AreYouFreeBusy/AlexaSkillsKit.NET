@@ -34,5 +34,11 @@ namespace AlexaSkillsKit.Speechlet
             get;
             set;
         }
+
+        public virtual Directive[] Directives
+        {
+            get;
+            set;
+        }
     }
 }
