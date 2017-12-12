@@ -63,7 +63,7 @@ namespace AlexaSkillsKit.Speechlet
 
         public virtual string[] IntentSequence {
             get {
-                return String.IsNullOrEmpty(Attributes[INTENT_SEQUENCE]) ?
+                return !Attributes.ContainsKey(INTENT_SEQUENCE) || String.IsNullOrEmpty(Attributes[INTENT_SEQUENCE]) ?
                     new string[0] : 
                     Attributes[INTENT_SEQUENCE].Split(
                         new string[1] { SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
