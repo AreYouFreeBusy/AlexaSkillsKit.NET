@@ -6,6 +6,10 @@ using NLog;
 using AlexaSkillsKit.Speechlet;
 using AlexaSkillsKit.Slu;
 using AlexaSkillsKit.UI;
+using AlexaSkillsKit.Interfaces.Display;
+using AlexaSkillsKit.Interfaces.VideoApp;
+using AlexaSkillsKit.Interfaces.Display.Directives;
+using AlexaSkillsKit.Interfaces.VideoApp.Directives;
 
 namespace Sample.Controllers
 {
@@ -17,7 +21,23 @@ namespace Sample.Controllers
         private const string NAME_KEY = "name";
         private const string NAME_SLOT = "Name";
 
-        
+
+        public override AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
+        public override void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
+        public override AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
+        public override SpeechletResponse OnDisplay(DisplayRequest displayRequest, Context context) {
+            throw new NotImplementedException();
+        }
+
         public override void OnSessionStarted(SessionStartedRequest request, Session session) {            
             Log.Info("OnSessionStarted requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }
@@ -29,7 +49,7 @@ namespace Sample.Controllers
         }
 
 
-        public override SpeechletResponse OnIntent(IntentRequest request, Session session) {
+        public override SpeechletResponse OnIntent(IntentRequest request, Session session, Context context) {
             Log.Info("OnIntent requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
 
             // Get intent from the request object.
@@ -81,7 +101,7 @@ namespace Sample.Controllers
          */
         private SpeechletResponse SetNameInSessionAndSayHello(Intent intent, Session session) {
             // Get the slots from the intent.
-            Dictionary<string, Slot> slots = intent.Slots;
+            IDictionary<string, Slot> slots = intent.Slots;
 
             // Get the name slot from the list slots.
             Slot nameSlot = slots[NAME_SLOT];
@@ -156,12 +176,99 @@ namespace Sample.Controllers
             PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
             speech.Text = output;
 
+            /* Create a directive for Echo Show (example)
+             * This can be separeted so it can be easier to create
+             * a Show Directive where you can only need to write 
+             * the important information
+             */
+            IList<Directive> listDirectiveTest = new List<Directive>();
+            DisplayRenderTemplateDirective directiveTest = new DisplayRenderTemplateDirective();
+            DisplayTemplate templateTest = new DisplayTemplate();
+            DisplayImage backgroundTest = new DisplayImage();
+            DisplayImage imageTest = new DisplayImage();
+
+            IList<DisplayImageSource> backgroundSourcesTest = new List<DisplayImageSource>();
+            IList<DisplayImageSource> imageSourcesTest = new List<DisplayImageSource>();
+
+            DisplayImageSource backgroundSource = new DisplayImageSource();
+            backgroundSource.Url = "URL for the background image - must be secure (https)";
+            DisplayImageSource imageSource = new DisplayImageSource();
+            imageSource.Url = "URL for the main image - must be secure (https)";
+
+            backgroundSourcesTest.Add(backgroundSource);
+            imageSourcesTest.Add(imageSource);
+
+            backgroundTest.ContentDescription = "Description for the background image";
+            backgroundTest.Sources = backgroundSourcesTest;
+
+            imageTest.ContentDescription = "Description for the main image";
+            imageTest.Sources = imageSourcesTest;
+
+            TextContent textContentTest = new TextContent();
+            TextField primaryContentTest = new TextField();
+            TextField secondaryContentTest = new TextField();
+            TextField tertiaryContentTest = new TextField();
+
+            primaryContentTest.Text = "Primary Text (could be formatted)";
+            primaryContentTest.Type = TextField.TextTypeEnum.RichText;
+
+            secondaryContentTest.Text = "Secondary Text (could be formatted)";
+            secondaryContentTest.Type = TextField.TextTypeEnum.RichText;
+
+            tertiaryContentTest.Text = "Tertiary Text (could be formatted)";
+            tertiaryContentTest.Type = TextField.TextTypeEnum.RichText;
+
+            textContentTest.PrimaryText = primaryContentTest;
+            textContentTest.SecondaryText = secondaryContentTest;
+            textContentTest.TertiaryText = tertiaryContentTest;
+
+            templateTest.Title = "Hello, this is a Test";
+            templateTest.BackButton = DisplayTemplate.ButtonStateEnum.HIDDEN;
+            templateTest.BackgroundImage = backgroundTest;
+            templateTest.Image = imageTest;
+            templateTest.Type = "BodyTemplate2";
+            templateTest.Token = "";
+            templateTest.TextContent = textContentTest;
+
+            directiveTest.Template = templateTest;
+            listDirectiveTest.Add(directiveTest);
+
             // Create the speechlet response.
             SpeechletResponse response = new SpeechletResponse();
             response.ShouldEndSession = shouldEndSession;
             response.OutputSpeech = speech;
             response.Card = card;
+            response.Directives = listDirectiveTest;
+
             return response;
+        }
+
+
+        /// <summary>
+        /// Creates an echo show video response
+        /// </summary>
+        /// <param name="title">video title</param>
+        /// <param name="subtitle">video subtitle</param>
+        /// <param name="url">url to video (must be https!)</param>
+        /// <remarks>shouldEndSession should be null (not true or false, null) for the video to work!</remarks>
+        /// <returns>Echo Show Video Directive, playing a single video.</returns>
+        private Directive BuildEchoShowVideoAppResponse(string title, string subtitle, string url)
+        {
+            VideoAppLaunchDirective videoDirectiveTest = new VideoAppLaunchDirective();
+
+            var videoItem = new VideoItem
+            {
+                Source = url,
+                Metadata = new VideoItemMetadata
+                {
+                    Title = title,
+                    Subtitle = subtitle
+                }
+            };
+
+            videoDirectiveTest.VideoItem = videoItem;
+
+            return videoDirectiveTest;
         }
     }
 }

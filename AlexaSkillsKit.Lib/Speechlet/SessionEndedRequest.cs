@@ -1,14 +1,13 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
-using System.Collections.Generic;
 
 namespace AlexaSkillsKit.Speechlet
 {
     public class SessionEndedRequest : SpeechletRequest
     {
-        public SessionEndedRequest(string requestId, DateTime timestamp, SessionEndedRequest.ReasonEnum reason) 
-            : base(requestId, timestamp) {
+        public SessionEndedRequest(string requestId, DateTime timestamp, string locale, SessionEndedRequest.ReasonEnum reason)
+            : base(requestId, timestamp, locale) {
 
             Reason = reason;
         }
@@ -18,7 +17,7 @@ namespace AlexaSkillsKit.Speechlet
             private set;
         }
 
-        public enum ReasonEnum        
+        public enum ReasonEnum
         {
             NONE = 0, // default in case parsing fails
             ERROR,
