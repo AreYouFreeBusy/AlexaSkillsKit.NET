@@ -118,13 +118,15 @@ namespace AlexaSkillsKit.Speechlet
             var request = requestEnvelope.Request;
             ISpeechletResponse response = null;
 
-            // Do session management prior to calling OnSessionStarted and OnIntentAsync 
-            // to allow dev to change session values if behavior is not desired
-            DoSessionManagement(request as IntentRequest, session);
+            if (session != null) {
+                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
+                // to allow dev to change session values if behavior is not desired
+                DoSessionManagement(request as IntentRequest, session);
 
-            if (requestEnvelope.Session.IsNew) {
-                await OnSessionStartedAsync(
-                    new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
+                if (session.IsNew) {
+                    await OnSessionStartedAsync(
+                        new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
+                }
             }
 
             // process launch request
@@ -165,7 +167,7 @@ namespace AlexaSkillsKit.Speechlet
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
                 Response = response,
-                SessionAttributes = session.Attributes
+                SessionAttributes = session?.Attributes
             };
             return responseEnvelope.ToJson();
         }
