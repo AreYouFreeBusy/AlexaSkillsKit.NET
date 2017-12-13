@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using AlexaSkillsKit.Interfaces.Display;
 using AlexaSkillsKit.Interfaces.AudioPlayer;
+using AlexaSkillsKit.Json;
 
 namespace AlexaSkillsKit.Speechlet
 {

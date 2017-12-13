@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AlexaSkillsKit.Speechlet
+namespace AlexaSkillsKit.Json
 {
     public class Deserializer<T>
     {

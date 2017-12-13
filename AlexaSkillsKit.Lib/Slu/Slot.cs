@@ -1,5 +1,6 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 
@@ -43,6 +44,7 @@ namespace AlexaSkillsKit.Slu
             set;
         }
 
+        [JsonIgnore]
         public virtual Resolutions Resolutions {
             get;
             set;
