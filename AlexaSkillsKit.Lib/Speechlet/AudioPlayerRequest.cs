@@ -7,7 +7,7 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class AudioPlayerRequest : ExtendedSpeechletRequest
     {
-        public AudioPlayerRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, long offsetInMilliseconds)
+        public AudioPlayerRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, long? offsetInMilliseconds = null)
             : base(requestId, timestamp, locale, subtype) {
             Token = token;
             OffsetInMilliseconds = offsetInMilliseconds;

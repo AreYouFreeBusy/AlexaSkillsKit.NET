@@ -6,13 +6,19 @@ namespace AlexaSkillsKit.Speechlet
 {
     public class SessionEndedRequest : SpeechletRequest
     {
-        public SessionEndedRequest(string requestId, DateTime timestamp, string locale, SessionEndedRequest.ReasonEnum reason)
+        public SessionEndedRequest(string requestId, DateTime timestamp, string locale, ReasonEnum reason, Error error)
             : base(requestId, timestamp, locale) {
 
             Reason = reason;
+            Error = error;
         }
 
-        public virtual SessionEndedRequest.ReasonEnum Reason {
+        public virtual ReasonEnum Reason {
+            get;
+            private set;
+        }
+
+        public Error Error {
             get;
             private set;
         }

@@ -12,13 +12,13 @@ namespace AlexaSkillsKit.Interfaces.AudioPlayer
             PlayerActivityEnum playerActivity = PlayerActivityEnum.NONE;
             Enum.TryParse(json.Value<string>("playerActivity"), out playerActivity);
             return new AudioPlayerState {
-                OffsetInMilliseconds = json.Value<long>("offsetInMilliseconds"),
+                OffsetInMilliseconds = json.Value<long?>("offsetInMilliseconds"),
                 Token = json.Value<string>("token"),
                 PlayerActivity = playerActivity
             };
         }
 
-        public long OffsetInMilliseconds {
+        public long? OffsetInMilliseconds {
             get;
             private set;
         }

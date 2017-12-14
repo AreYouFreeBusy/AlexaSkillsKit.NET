@@ -15,7 +15,7 @@ namespace AlexaSkillsKit.Speechlet
             Enum.TryParse(json.Value<string>("playerActivity"), out playerActivity);
             return new PlaybackState {
                 Token = json.Value<string>("token"),
-                OffsetInMilliseconds = json.Value<long>("playerActivity"),
+                OffsetInMilliseconds = json.Value<long?>("offsetInMilliseconds"),
                 PlayerActivity = playerActivity
             };
         }

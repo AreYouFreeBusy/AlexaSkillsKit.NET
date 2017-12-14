@@ -32,13 +32,23 @@ namespace AlexaSkillsKit.Json
         /// <param name="json"></param>
         /// <returns></returns>
         public static SpeechletRequestEnvelope FromJson(JObject json) {
-            if (json["version"] != null && json["version"].Value<string>() != Sdk.VERSION) {
+            var version = json.Value<string>("version");
+            if (version != null && version != Sdk.VERSION) {
                 throw new SpeechletException("Request must conform to 1.0 schema.");
             }
 
+            return new SpeechletRequestEnvelope {
+                Version = version,
+                Request = RequestFromJson(json.Value<JObject>("request")),
+                Session = Session.FromJson(json.Value<JObject>("session")),
+                Context = Context.FromJson(json.Value<JObject>("context"))
+            };
+        }
+
+
+        private static SpeechletRequest RequestFromJson(JObject json) {
             SpeechletRequest request;
-            var requestJson = json.Value<JObject>("request");
-            var requestTypeParts = requestJson?.Value<string>("type")?.Split('.');
+            var requestTypeParts = json?.Value<string>("type")?.Split('.');
             if (requestTypeParts == null) {
                 throw new ArgumentException("json");
             }
@@ -46,17 +56,17 @@ namespace AlexaSkillsKit.Json
             var requestType = requestTypeParts[0];
             var requestSubType = requestTypeParts.Length > 1 ? requestTypeParts[1] : null;
 
-            var requestId = requestJson?.Value<string>("requestId");
-            var timestamp = DateTimeHelpers.FromAlexaTimestamp(requestJson);
-            var locale = requestJson?.Value<string>("locale");
+            var requestId = json.Value<string>("requestId");
+            var timestamp = DateTimeHelpers.FromAlexaTimestamp(json);
+            var locale = json.Value<string>("locale");
             switch (requestType) {
                 case "LaunchRequest":
                     request = new LaunchRequest(requestId, timestamp, locale);
                     break;
                 case "IntentRequest":
                     IntentRequest.DialogStateEnum dialogState = IntentRequest.DialogStateEnum.NONE;
-                    Enum.TryParse(requestJson.Value<string>("dialogState"), out dialogState);
-                    var intent = Intent.FromJson(requestJson.Value<JObject>("intent"));
+                    Enum.TryParse(json.Value<string>("dialogState"), out dialogState);
+                    var intent = Intent.FromJson(json.Value<JObject>("intent"));
                     request = new IntentRequest(requestId, timestamp, locale, intent, dialogState);
                     break;
                 case "SessionStartedRequest":
@@ -64,14 +74,15 @@ namespace AlexaSkillsKit.Json
                     break;
                 case "SessionEndedRequest":
                     SessionEndedRequest.ReasonEnum reason = SessionEndedRequest.ReasonEnum.NONE;
-                    Enum.TryParse(requestJson.Value<string>("reason"), out reason);
-                    request = new SessionEndedRequest(requestId, timestamp, locale, reason);
+                    Enum.TryParse(json.Value<string>("reason"), out reason);
+                    var sessionError = Error.FromJson(json.Value<JObject>("error"));
+                    request = new SessionEndedRequest(requestId, timestamp, locale, reason, sessionError);
                     break;
                 case "AudioPlayer":
-                    var token = requestJson?.Value<string>("token");
-                    var offset = requestJson?.Value<long>("offsetInMilliseconds") ?? 0;
-                    var playbackError = Error.FromJson(requestJson?.Value<JObject>("error"));
-                    var currentPlaybackState = PlaybackState.FromJson(requestJson?.Value<JObject>("currentPlaybackState"));
+                    var token = json.Value<string>("token");
+                    var offset = json.Value<long?>("offsetInMilliseconds");
+                    var playbackError = Error.FromJson(json.Value<JObject>("error"));
+                    var currentPlaybackState = PlaybackState.FromJson(json.Value<JObject>("currentPlaybackState"));
                     switch (requestSubType) {
                         case "PlaybackFailed":
                             request = new AudioPlayerPlaybackFailedRequest(requestId, timestamp, locale, requestSubType, token, playbackError, currentPlaybackState);
@@ -85,15 +96,15 @@ namespace AlexaSkillsKit.Json
                     request = new PlaybackControllerRequest(requestId, timestamp, locale, requestSubType);
                     break;
                 case "Display":
-                    var listItemToken = requestJson?.Value<string>("token");
+                    var listItemToken = json.Value<string>("token");
                     request = new DisplayRequest(requestId, timestamp, locale, requestSubType, listItemToken);
                     break;
                 case "System":
                     switch (requestSubType) {
                         case "ExceptionEncountered":
-                            var error = Error.FromJson(requestJson?.Value<JObject>("error"));
-                            var cause = Cause.FromJson(requestJson?.Value<JObject>("cause"));
-                            request = new SystemExceptionEncounteredRequest(requestId, timestamp, locale, requestSubType, error, cause);
+                            var systemError = Error.FromJson(json.Value<JObject>("error"));
+                            var cause = Cause.FromJson(json.Value<JObject>("cause"));
+                            request = new SystemExceptionEncounteredRequest(requestId, timestamp, locale, requestSubType, systemError, cause);
                             break;
                         default:
                             throw new ArgumentException("json");
@@ -103,12 +114,7 @@ namespace AlexaSkillsKit.Json
                     throw new ArgumentException("json");
             }
 
-            return new SpeechletRequestEnvelope {
-                Request = request,
-                Session = Session.FromJson(json.Value<JObject>("session")),
-                Version = json.Value<string>("version"),
-                Context = Context.FromJson(json.Value<JObject>("context"))
-            };
+            return request;
         }
 
 

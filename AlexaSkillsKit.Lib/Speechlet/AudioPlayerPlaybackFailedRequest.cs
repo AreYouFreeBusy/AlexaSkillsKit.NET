@@ -8,7 +8,7 @@ namespace AlexaSkillsKit.Speechlet
     public class AudioPlayerPlaybackFailedRequest : AudioPlayerRequest
     {
         public AudioPlayerPlaybackFailedRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, Error error, PlaybackState currentPlaybackState)
-            : base(requestId, timestamp, locale, subtype, token, 0) {
+            : base(requestId, timestamp, locale, subtype, token) {
             Error = error;
             CurrentPlaybackState = currentPlaybackState;
         }
