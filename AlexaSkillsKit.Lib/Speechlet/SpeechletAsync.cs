@@ -180,11 +180,11 @@ namespace AlexaSkillsKit.Speechlet
         private void DoSessionManagement(IntentRequest request, Session session) {
             if (request == null) return;
 
+            if (session.Attributes == null) {
+                session.Attributes = new Dictionary<string, string>();
+            }
+
             if (session.IsNew) {
-                if (session.Attributes == null)
-                {
-                    session.Attributes = new Dictionary<string, string>();
-                }
                 session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;
             }
             else {
