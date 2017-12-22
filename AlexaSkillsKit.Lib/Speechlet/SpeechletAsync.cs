@@ -1,6 +1,7 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -178,6 +179,10 @@ namespace AlexaSkillsKit.Speechlet
         /// </summary>
         private void DoSessionManagement(IntentRequest request, Session session) {
             if (request == null) return;
+
+            if (session.Attributes == null) {
+                session.Attributes = new Dictionary<string, string>();
+            }
 
             if (session.IsNew) {
                 session.Attributes[Session.INTENT_SEQUENCE] = request.Intent.Name;

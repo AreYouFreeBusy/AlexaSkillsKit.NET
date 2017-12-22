@@ -28,7 +28,7 @@ namespace AlexaSkillsKit.Slu
             return new Intent {
                 Name = json.Value<string>("name"),
                 ConfirmationStatus = confirmationStatus,
-                Slots = slots
+                Slots = slots ?? new Dictionary<string, Slot>()
             };
         }
 
