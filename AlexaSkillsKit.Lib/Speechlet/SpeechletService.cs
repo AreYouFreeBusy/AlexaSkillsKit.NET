@@ -19,7 +19,7 @@ namespace AlexaSkillsKit.Speechlet
 
 
         public async Task<SpeechletRequestEnvelope> GetRequestAsync(string content, string chainUrl, string signature) {
-            SpeechletRequestValidationResult validationResult = SpeechletRequestValidationResult.OK;
+            var validationResult = SpeechletRequestValidationResult.OK;
 
             if (string.IsNullOrEmpty(chainUrl)) {
                 validationResult |= SpeechletRequestValidationResult.NoCertHeader;
@@ -51,7 +51,7 @@ namespace AlexaSkillsKit.Speechlet
 
             // attempt to verify timestamp only if we were able to parse request body
             if (result != null) {
-                DateTime now = DateTime.UtcNow; // reference time for this request
+                var now = DateTime.UtcNow; // reference time for this request
 
                 if (!SpeechletRequestTimestampVerifier.VerifyRequestTimestamp(result, now)) {
                     validationResult |= SpeechletRequestValidationResult.InvalidTimestamp;
@@ -85,7 +85,7 @@ namespace AlexaSkillsKit.Speechlet
                 DoSessionManagement(request as IntentRequest, session);
 
                 if (session.IsNew) {
-                    await speechlet.OnSessionStartedAsync(
+                    await speechlet?.OnSessionStartedAsync(
                         new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
                 }
             }
@@ -130,6 +130,7 @@ namespace AlexaSkillsKit.Speechlet
                 Response = response,
                 SessionAttributes = session?.Attributes
             };
+
             return responseEnvelope;
         }
 
