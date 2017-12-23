@@ -1,12 +1,8 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using AlexaSkillsKit.Speechlet;
 using System.Net.Http;
 using System.Web.Http;
-using Newtonsoft.Json.Linq;
-using AlexaSkillsKit;
 
 namespace Sample.Controllers
 {
