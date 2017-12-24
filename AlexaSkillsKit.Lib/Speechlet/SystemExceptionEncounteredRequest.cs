@@ -7,7 +7,7 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class SystemExceptionEncounteredRequest : ExtendedSpeechletRequest
     {
-        public SystemExceptionEncounteredRequest(JObject json, string subtype) : base(json, subtype) {
+        public SystemExceptionEncounteredRequest(string subtype, JObject json) : base(subtype, json) {
             Error = Error.FromJson(json.Value<JObject>("error"));
             Cause = Cause.FromJson(json.Value<JObject>("cause"));
         }

@@ -9,7 +9,7 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class ExtendedSpeechletRequest : SpeechletRequest
     {
-        public ExtendedSpeechletRequest(JObject json, string subtype) : base(json) {
+        public ExtendedSpeechletRequest(string subtype, JObject json) : base(json) {
             Subtype = subtype;
         }
 

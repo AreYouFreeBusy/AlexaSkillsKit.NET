@@ -7,7 +7,7 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class PlaybackControllerRequest : ExtendedSpeechletRequest
     {
-        public PlaybackControllerRequest(JObject json, string subtype) : base(json, subtype) {
+        public PlaybackControllerRequest(string subtype, JObject json) : base(subtype, json) {
         }
     }
 }

@@ -68,18 +68,18 @@ namespace AlexaSkillsKit.Json
                 case "AudioPlayer":
                     switch (requestSubType) {
                         case "PlaybackFailed":
-                            return new AudioPlayerPlaybackFailedRequest(json, requestSubType);
+                            return new AudioPlayerPlaybackFailedRequest(requestSubType, json);
                         default:
-                            return new AudioPlayerRequest(json, requestSubType);
+                            return new AudioPlayerRequest(requestSubType, json);
                     }
                 case "PlaybackController":
-                    return new PlaybackControllerRequest(json, requestSubType);
+                    return new PlaybackControllerRequest(requestSubType, json);
                 case "Display":
-                    return new DisplayRequest(json, requestSubType);
+                    return new DisplayRequest(requestSubType, json);
                 case "System":
                     switch (requestSubType) {
                         case "ExceptionEncountered":
-                            return new SystemExceptionEncounteredRequest(json, requestSubType);
+                            return new SystemExceptionEncounteredRequest(requestSubType, json);
                     }
                     break;
             }
