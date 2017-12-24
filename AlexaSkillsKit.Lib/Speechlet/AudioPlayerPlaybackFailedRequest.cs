@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet
 {
@@ -7,10 +7,9 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class AudioPlayerPlaybackFailedRequest : AudioPlayerRequest
     {
-        public AudioPlayerPlaybackFailedRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, Error error, PlaybackState currentPlaybackState)
-            : base(requestId, timestamp, locale, subtype, token) {
-            Error = error;
-            CurrentPlaybackState = currentPlaybackState;
+        public AudioPlayerPlaybackFailedRequest(JObject json, string subtype) : base(json, subtype) {
+            Error = Error.FromJson(json.Value<JObject>("error"));
+            CurrentPlaybackState = PlaybackState.FromJson(json.Value<JObject>("currentPlaybackState"));
         }
 
         public Error Error {

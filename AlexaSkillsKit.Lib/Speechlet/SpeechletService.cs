@@ -86,7 +86,7 @@ namespace AlexaSkillsKit.Speechlet
 
                 if (session.IsNew) {
                     await speechlet?.OnSessionStartedAsync(
-                        new SessionStartedRequest(request.RequestId, request.Timestamp, request.Locale), session);
+                        new SessionStartedRequest(request), session);
                 }
             }
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet
 {
@@ -7,10 +7,9 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class SystemExceptionEncounteredRequest : ExtendedSpeechletRequest
     {
-        public SystemExceptionEncounteredRequest(string requestId, DateTime timestamp, string locale, string subtype, Error error, Cause cause)
-            : base(requestId, timestamp, locale, subtype) {
-            Error = error;
-            Cause = Cause;
+        public SystemExceptionEncounteredRequest(JObject json, string subtype) : base(json, subtype) {
+            Error = Error.FromJson(json.Value<JObject>("error"));
+            Cause = Cause.FromJson(json.Value<JObject>("cause"));
         }
 
         public Error Error {

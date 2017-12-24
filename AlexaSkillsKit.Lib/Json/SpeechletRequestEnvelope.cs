@@ -3,9 +3,8 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using AlexaSkillsKit.Helpers;
 using AlexaSkillsKit.Speechlet;
-using AlexaSkillsKit.Slu;
+using System.Linq;
 
 namespace AlexaSkillsKit.Json
 {
@@ -47,74 +46,44 @@ namespace AlexaSkillsKit.Json
 
 
         private static SpeechletRequest RequestFromJson(JObject json) {
-            SpeechletRequest request;
             var requestTypeParts = json?.Value<string>("type")?.Split('.');
             if (requestTypeParts == null) {
                 throw new ArgumentException("json");
             }
 
-            var requestType = requestTypeParts[0];
-            var requestSubType = requestTypeParts.Length > 1 ? requestTypeParts[1] : null;
+            var requestType = requestTypeParts.Length > 1 ? requestTypeParts[0] : "";
+            var requestSubType = requestTypeParts.Last();
 
-            var requestId = json.Value<string>("requestId");
-            var timestamp = DateTimeHelpers.FromAlexaTimestamp(json);
-            var locale = json.Value<string>("locale");
             switch (requestType) {
-                case "LaunchRequest":
-                    request = new LaunchRequest(requestId, timestamp, locale);
-                    break;
-                case "IntentRequest":
-                    IntentRequest.DialogStateEnum dialogState = IntentRequest.DialogStateEnum.NONE;
-                    Enum.TryParse(json.Value<string>("dialogState"), out dialogState);
-                    var intent = Intent.FromJson(json.Value<JObject>("intent"));
-                    request = new IntentRequest(requestId, timestamp, locale, intent, dialogState);
-                    break;
-                case "SessionStartedRequest":
-                    request = new SessionStartedRequest(requestId, timestamp, locale);
-                    break;
-                case "SessionEndedRequest":
-                    SessionEndedRequest.ReasonEnum reason = SessionEndedRequest.ReasonEnum.NONE;
-                    Enum.TryParse(json.Value<string>("reason"), out reason);
-                    var sessionError = Error.FromJson(json.Value<JObject>("error"));
-                    request = new SessionEndedRequest(requestId, timestamp, locale, reason, sessionError);
-                    break;
-                case "AudioPlayer":
-                    var token = json.Value<string>("token");
-                    var offset = json.Value<long?>("offsetInMilliseconds");
-                    var playbackError = Error.FromJson(json.Value<JObject>("error"));
-                    var currentPlaybackState = PlaybackState.FromJson(json.Value<JObject>("currentPlaybackState"));
+                case "":
                     switch (requestSubType) {
-                        case "PlaybackFailed":
-                            request = new AudioPlayerPlaybackFailedRequest(requestId, timestamp, locale, requestSubType, token, playbackError, currentPlaybackState);
-                            break;
-                        default:
-                            request = new AudioPlayerRequest(requestId, timestamp, locale, requestSubType, token, offset);
-                            break;
+                        case "LaunchRequest":
+                            return new LaunchRequest(json);
+                        case "IntentRequest":
+                            return new IntentRequest(json);
+                        case "SessionEndedRequest":
+                            return new SessionEndedRequest(json);
                     }
                     break;
+                case "AudioPlayer":
+                    switch (requestSubType) {
+                        case "PlaybackFailed":
+                            return new AudioPlayerPlaybackFailedRequest(json, requestSubType);
+                        default:
+                            return new AudioPlayerRequest(json, requestSubType);
+                    }
                 case "PlaybackController":
-                    request = new PlaybackControllerRequest(requestId, timestamp, locale, requestSubType);
-                    break;
+                    return new PlaybackControllerRequest(json, requestSubType);
                 case "Display":
-                    var listItemToken = json.Value<string>("token");
-                    request = new DisplayRequest(requestId, timestamp, locale, requestSubType, listItemToken);
-                    break;
+                    return new DisplayRequest(json, requestSubType);
                 case "System":
                     switch (requestSubType) {
                         case "ExceptionEncountered":
-                            var systemError = Error.FromJson(json.Value<JObject>("error"));
-                            var cause = Cause.FromJson(json.Value<JObject>("cause"));
-                            request = new SystemExceptionEncounteredRequest(requestId, timestamp, locale, requestSubType, systemError, cause);
-                            break;
-                        default:
-                            throw new ArgumentException("json");
+                            return new SystemExceptionEncounteredRequest(json, requestSubType);
                     }
                     break;
-                default:
-                    throw new ArgumentException("json");
             }
-
-            return request;
+            throw new ArgumentException("json");
         }
 
 
