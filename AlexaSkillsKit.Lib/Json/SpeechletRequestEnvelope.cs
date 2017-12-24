@@ -4,12 +4,21 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AlexaSkillsKit.Speechlet;
-using System.Linq;
 
 namespace AlexaSkillsKit.Json
 {
     public class SpeechletRequestEnvelope
     {
+        public static SpeechletRequestParser RequestParser { get; } = new SpeechletRequestParser();
+
+        static SpeechletRequestEnvelope() {
+            RequestParser.AddStandard();
+            RequestParser.AddSystem();
+            RequestParser.AddAudioPlayer();
+            RequestParser.AddPlaybackController();
+            RequestParser.AddDisplay();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -38,52 +47,10 @@ namespace AlexaSkillsKit.Json
 
             return new SpeechletRequestEnvelope {
                 Version = version,
-                Request = RequestFromJson(json.Value<JObject>("request")),
+                Request = RequestParser.Parse(json.Value<JObject>("request")),
                 Session = Session.FromJson(json.Value<JObject>("session")),
                 Context = Context.FromJson(json.Value<JObject>("context"))
             };
-        }
-
-
-        private static SpeechletRequest RequestFromJson(JObject json) {
-            var requestTypeParts = json?.Value<string>("type")?.Split('.');
-            if (requestTypeParts == null) {
-                throw new ArgumentException("json");
-            }
-
-            var requestType = requestTypeParts.Length > 1 ? requestTypeParts[0] : "";
-            var requestSubType = requestTypeParts.Last();
-
-            switch (requestType) {
-                case "":
-                    switch (requestSubType) {
-                        case "LaunchRequest":
-                            return new LaunchRequest(json);
-                        case "IntentRequest":
-                            return new IntentRequest(json);
-                        case "SessionEndedRequest":
-                            return new SessionEndedRequest(json);
-                    }
-                    break;
-                case "AudioPlayer":
-                    switch (requestSubType) {
-                        case "PlaybackFailed":
-                            return new AudioPlayerPlaybackFailedRequest(requestSubType, json);
-                        default:
-                            return new AudioPlayerRequest(requestSubType, json);
-                    }
-                case "PlaybackController":
-                    return new PlaybackControllerRequest(requestSubType, json);
-                case "Display":
-                    return new DisplayRequest(requestSubType, json);
-                case "System":
-                    switch (requestSubType) {
-                        case "ExceptionEncountered":
-                            return new SystemExceptionEncounteredRequest(requestSubType, json);
-                    }
-                    break;
-            }
-            throw new ArgumentException("json");
         }
 
 

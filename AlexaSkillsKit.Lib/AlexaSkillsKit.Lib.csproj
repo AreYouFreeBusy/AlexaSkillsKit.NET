@@ -85,6 +85,8 @@
     <Compile Include="Json\CamelCasePropertyNamesExceptDictionaryKeysContractResolver.cs" />
     <Compile Include="Json\Deserializer.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />
+    <Compile Include="Json\SpeechletRequestParserExtensions.cs" />
+    <Compile Include="Json\SpeechletRequestParser.cs" />
     <Compile Include="Json\SpeechletResponseEnvelope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sdk.cs" />
