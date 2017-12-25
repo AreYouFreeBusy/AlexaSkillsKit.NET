@@ -81,7 +81,6 @@
     <Compile Include="Interfaces\VideoApp\VideoItem.cs" />
     <Compile Include="Interfaces\VideoApp\VideoItemMetadata.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
-    <Compile Include="HttpHelpers.cs" />
     <Compile Include="Json\CamelCasePropertyNamesExceptDictionaryKeysContractResolver.cs" />
     <Compile Include="Json\Deserializer.cs" />
     <Compile Include="Json\SpeechletRequestEnvelope.cs" />

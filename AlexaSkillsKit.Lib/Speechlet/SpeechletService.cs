@@ -2,6 +2,7 @@
 
 using AlexaSkillsKit.Authentication;
 using AlexaSkillsKit.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,9 @@ namespace AlexaSkillsKit.Speechlet
     public class SpeechletService
     {
         private ISpeechletAsync speechlet;
+
+        public string ApplicationId { get; set; }
+
 
         public void Initialize(ISpeechletAsync speechlet) {
             this.speechlet = speechlet;
@@ -42,8 +46,11 @@ namespace AlexaSkillsKit.Speechlet
             try {
                 result = SpeechletRequestEnvelope.FromJson(content);
             }
+            catch (SpeechletValidationException ex) {
+                validationResult |= ex.ValidationResult;
+            }
             catch (Exception ex)
-            when (ex is Newtonsoft.Json.JsonReaderException || ex is InvalidCastException || ex is FormatException) {
+            when (ex is JsonReaderException || ex is InvalidCastException || ex is FormatException) {
                 validationResult |= SpeechletRequestValidationResult.InvalidJson;
             }
 
@@ -55,6 +62,10 @@ namespace AlexaSkillsKit.Speechlet
 
                 if (!SpeechletRequestTimestampVerifier.VerifyRequestTimestamp(result, now)) {
                     validationResult |= SpeechletRequestValidationResult.InvalidTimestamp;
+                }
+
+                if (!string.IsNullOrEmpty(ApplicationId) && result.Context.System.Application.Id != ApplicationId) {
+                    validationResult |= SpeechletRequestValidationResult.InvalidApplicationId;
                 }
 
                 success = speechlet?.OnRequestValidation(validationResult, now, result) ?? (validationResult == SpeechletRequestValidationResult.OK);
