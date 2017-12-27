@@ -7,7 +7,9 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class DisplayRequest : ExtendedSpeechletRequest
     {
-        public DisplayRequest(string subtype, JObject json) : base(subtype, json) {
+        public static readonly string TypeName = "Display";
+
+        public DisplayRequest(string subtype, JObject json) : base(TypeName, subtype, json) {
             Token = json.Value<string>("token");
         }
 

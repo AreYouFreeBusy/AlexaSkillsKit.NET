@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace AlexaSkillsKit.Speechlet
 {
-    public class SpeechletBase
+    public class SpeechletBase : ISpeechletBase
     {
-        public SpeechletService Service { get; } = new SpeechletService();
+        public SpeechletService Service { get; }
 
+        protected SpeechletBase() {
+            Service = new SpeechletService(this);
+        }
 
         /// <summary>
         /// Processes Alexa request but does NOT validate request signature 

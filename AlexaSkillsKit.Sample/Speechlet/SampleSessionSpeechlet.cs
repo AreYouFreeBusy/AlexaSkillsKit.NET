@@ -22,22 +22,6 @@ namespace Sample.Controllers
         private const string NAME_SLOT = "Name";
 
 
-        public override AudioPlayerResponse OnAudioPlayer(AudioPlayerRequest audioRequest, Context context) {
-            throw new NotImplementedException();
-        }
-
-        public override void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context) {
-            throw new NotImplementedException();
-        }
-
-        public override AudioPlayerResponse OnPlaybackController(PlaybackControllerRequest playbackRequest, Context context) {
-            throw new NotImplementedException();
-        }
-
-        public override SpeechletResponse OnDisplay(DisplayRequest displayRequest, Context context) {
-            throw new NotImplementedException();
-        }
-
         public override void OnSessionStarted(SessionStartedRequest request, Session session) {            
             Log.Info("OnSessionStarted requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }

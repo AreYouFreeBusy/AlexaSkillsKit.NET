@@ -63,12 +63,16 @@
     <Compile Include="Interfaces\AudioPlayer\AudioItemStream.cs" />
     <Compile Include="Interfaces\AudioPlayer\AudioPlayerInterface.cs" />
     <Compile Include="Interfaces\AudioPlayer\AudioPlayerState.cs" />
+    <Compile Include="Interfaces\AudioPlayer\IAudioPlayerSpeechlet.cs" />
+    <Compile Include="Interfaces\AudioPlayer\IAudioPlayerSpeechletAsync.cs" />
     <Compile Include="Interfaces\Display\Directives\HintDirective.cs" />
     <Compile Include="Interfaces\Display\Directives\DisplayRenderTemplateDirective.cs" />
     <Compile Include="Interfaces\Display\DisplayInterface.cs" />
     <Compile Include="Interfaces\Display\DisplayImage.cs" />
     <Compile Include="Interfaces\Display\DisplayImageSource.cs" />
     <Compile Include="Interfaces\Display\DisplayTemplate.cs" />
+    <Compile Include="Interfaces\Display\IDisplaySpeechlet.cs" />
+    <Compile Include="Interfaces\Display\IDisplaySpeechletAsync.cs" />
     <Compile Include="Interfaces\Display\ListItem.cs" />
     <Compile Include="Interfaces\Display\TextField.cs" />
     <Compile Include="Interfaces\Display\TextContent.cs" />
@@ -98,10 +102,10 @@
     <Compile Include="Slu\ResolutionsPerAuthorityValueValue.cs" />
     <Compile Include="Slu\Slot.cs" />
     <Compile Include="Speechlet\Application.cs" />
-    <Compile Include="Speechlet\AudioPlayerDirective.cs" />
-    <Compile Include="Speechlet\AudioPlayerPlaybackFailedRequest.cs" />
-    <Compile Include="Speechlet\AudioPlayerRequest.cs" />
-    <Compile Include="Speechlet\AudioPlayerResponse.cs" />
+    <Compile Include="Interfaces\AudioPlayer\Directives\AudioPlayerDirective.cs" />
+    <Compile Include="Interfaces\AudioPlayer\AudioPlayerPlaybackFailedRequest.cs" />
+    <Compile Include="Interfaces\AudioPlayer\AudioPlayerRequest.cs" />
+    <Compile Include="Interfaces\AudioPlayer\AudioPlayerResponse.cs" />
     <Compile Include="Speechlet\Cause.cs" />
     <Compile Include="Speechlet\Context.cs" />
     <Compile Include="Speechlet\Device.cs" />
@@ -112,6 +116,7 @@
     <Compile Include="Speechlet\IntentRequest.cs" />
     <Compile Include="Speechlet\ISpeechlet.cs" />
     <Compile Include="Speechlet\ISpeechletAsync.cs" />
+    <Compile Include="Speechlet\ISpeechletBase.cs" />
     <Compile Include="Speechlet\ISpeechletInterface.cs" />
     <Compile Include="Speechlet\ISpeechletInterfaceState.cs" />
     <Compile Include="Speechlet\ISpeechletResponse.cs" />
@@ -123,7 +128,6 @@
     <Compile Include="Speechlet\SessionStartedRequest.cs" />
     <Compile Include="Speechlet\Speechlet.cs" />
     <Compile Include="Speechlet\SpeechletAsync.cs" />
-    <Compile Include="Speechlet\SpeechletAsyncWrapper.cs" />
     <Compile Include="Speechlet\SpeechletBase.cs" />
     <Compile Include="Speechlet\SpeechletException.cs" />
     <Compile Include="Speechlet\SpeechletRequest.cs" />
@@ -131,6 +135,7 @@
     <Compile Include="Speechlet\SpeechletValidationException.cs" />
     <Compile Include="Speechlet\SpeechletResponse.cs" />
     <Compile Include="Speechlet\SupportedInterfaces.cs" />
+    <Compile Include="Speechlet\SystemRequest.cs" />
     <Compile Include="Speechlet\SystemExceptionEncounteredRequest.cs" />
     <Compile Include="Speechlet\SystemNetHttpExtensions.cs" />
     <Compile Include="Speechlet\SystemState.cs" />

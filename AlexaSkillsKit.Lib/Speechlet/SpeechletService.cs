@@ -1,6 +1,8 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
 using AlexaSkillsKit.Authentication;
+using AlexaSkillsKit.Interfaces.AudioPlayer;
+using AlexaSkillsKit.Interfaces.Display;
 using AlexaSkillsKit.Json;
 using Newtonsoft.Json;
 using System;
@@ -12,13 +14,46 @@ namespace AlexaSkillsKit.Speechlet
 {
     public class SpeechletService
     {
-        private ISpeechletAsync speechlet;
+        private ISpeechletBase speechlet;
+
+        private IDictionary<string, Func<ExtendedSpeechletRequest, Context, Task<ISpeechletResponse>>> handlers
+            = new Dictionary<string, Func<ExtendedSpeechletRequest, Context, Task<ISpeechletResponse>>>();
 
         public string ApplicationId { get; set; }
 
 
-        public void Initialize(ISpeechletAsync speechlet) {
+        public void AddHandler<T>(string type, Func<T, Context, Task<ISpeechletResponse>> handler) where T : SpeechletRequest {
+            handlers[type] = (request, context) => handler(request as T, context);
+        }
+
+
+        public SpeechletService(ISpeechletBase speechlet) {
             this.speechlet = speechlet;
+
+            if (speechlet is IAudioPlayerSpeechletAsync || speechlet is IAudioPlayerSpeechlet) {
+                AddHandler<AudioPlayerRequest>(AudioPlayerRequest.TypeName, async (request, context) => {
+                    return (speechlet as IAudioPlayerSpeechlet)?.OnAudioPlayer(request, context) ??
+                        await (speechlet as IAudioPlayerSpeechletAsync)?.OnAudioPlayerAsync(request, context);
+                });
+
+                AddHandler<PlaybackControllerRequest>(PlaybackControllerRequest.TypeName, async (request, context) => {
+                    return (speechlet as IAudioPlayerSpeechlet)?.OnPlaybackController(request, context) ??
+                        await (speechlet as IAudioPlayerSpeechletAsync)?.OnPlaybackControllerAsync(request, context);
+                });
+
+                AddHandler<SystemExceptionEncounteredRequest>(SystemRequest.TypeName, async (request, context) => {
+                    (speechlet as IAudioPlayerSpeechlet)?.OnSystemExceptionEncountered(request, context);
+                    await (speechlet as IAudioPlayerSpeechletAsync).OnSystemExceptionEncounteredAsync(request, context);
+                    return null;
+                });
+            }
+
+            if (speechlet is IDisplaySpeechletAsync) {
+                AddHandler<DisplayRequest>(DisplayRequest.TypeName, async (request, context) => {
+                    return (speechlet as IDisplaySpeechlet).OnDisplay(request, context) ??
+                        await (speechlet as IDisplaySpeechletAsync).OnDisplayAsync(request, context);
+                });
+            }
         }
 
 
@@ -88,53 +123,10 @@ namespace AlexaSkillsKit.Speechlet
             var session = requestEnvelope.Session;
             var context = requestEnvelope.Context;
             var request = requestEnvelope.Request;
-            ISpeechletResponse response = null;
 
-            if (session != null) {
-                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
-                // to allow dev to change session values if behavior is not desired
-                DoSessionManagement(request as IntentRequest, session);
-
-                if (session.IsNew) {
-                    await speechlet?.OnSessionStartedAsync(
-                        new SessionStartedRequest(request), session);
-                }
-            }
-
-            // process launch request
-            if (requestEnvelope.Request is LaunchRequest) {
-                response = await speechlet?.OnLaunchAsync(request as LaunchRequest, session);
-            }
-
-            // process audio player request
-            else if (requestEnvelope.Request is AudioPlayerRequest) {
-                response = await speechlet?.OnAudioPlayerAsync(request as AudioPlayerRequest, context);
-            }
-
-            // process playback controller request
-            else if (requestEnvelope.Request is PlaybackControllerRequest) {
-                response = await speechlet?.OnPlaybackControllerAsync(request as PlaybackControllerRequest, context);
-            }
-
-            // process display request
-            else if (requestEnvelope.Request is DisplayRequest) {
-                response = await speechlet?.OnDisplayAsync(request as DisplayRequest, context);
-            }
-
-            // process system request
-            else if (requestEnvelope.Request is SystemExceptionEncounteredRequest) {
-                await speechlet?.OnSystemExceptionEncounteredAsync(request as SystemExceptionEncounteredRequest, context);
-            }
-
-            // process intent request
-            else if (requestEnvelope.Request is IntentRequest) {
-                response = await speechlet?.OnIntentAsync(request as IntentRequest, session, context);
-            }
-
-            // process session ended request
-            else if (requestEnvelope.Request is SessionEndedRequest) {
-                await speechlet?.OnSessionEndedAsync(request as SessionEndedRequest, session);
-            }
+            var response = (request is ExtendedSpeechletRequest) ?
+                await HandleStandardRequestAsync(request, session, context) :
+                await HandleExtendedRequestAsync(request as ExtendedSpeechletRequest, context);
 
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
@@ -143,6 +135,46 @@ namespace AlexaSkillsKit.Speechlet
             };
 
             return responseEnvelope;
+        }
+
+
+        private async Task<ISpeechletResponse> HandleStandardRequestAsync(SpeechletRequest request, Session session, Context context) {
+            if (session != null) {
+                // Do session management prior to calling OnSessionStarted and OnIntentAsync 
+                // to allow dev to change session values if behavior is not desired
+                DoSessionManagement(request as IntentRequest, session);
+
+                if (session.IsNew) {
+                    var sessionStartedRequest = new SessionStartedRequest(request);
+                    (speechlet as ISpeechlet)?.OnSessionStarted(sessionStartedRequest, session);
+                    await (speechlet as ISpeechletAsync)?.OnSessionStartedAsync(sessionStartedRequest, session);
+                }
+            }
+
+            // process launch request
+            if (request is LaunchRequest) {
+                return (speechlet as ISpeechlet)?.OnLaunch(request as LaunchRequest, session) ??
+                    await (speechlet as ISpeechletAsync)?.OnLaunchAsync(request as LaunchRequest, session);
+            }
+
+            // process intent request
+            else if (request is IntentRequest) {
+                return (speechlet as ISpeechlet)?.OnIntent(request as IntentRequest, session, context) ??
+                    await (speechlet as ISpeechletAsync)?.OnIntentAsync(request as IntentRequest, session, context);
+            }
+
+            // process session ended request
+            else if (request is SessionEndedRequest) {
+                (speechlet as ISpeechlet)?.OnSessionEnded(request as SessionEndedRequest, session);
+                await (speechlet as ISpeechletAsync)?.OnSessionEndedAsync(request as SessionEndedRequest, session);
+            }
+
+            return null;
+        }
+
+
+        private async Task<ISpeechletResponse> HandleExtendedRequestAsync(ExtendedSpeechletRequest request, Context context) {
+            return handlers.ContainsKey(request.Type) ? (await handlers[request.Type]?.Invoke(request, context)) : null;
         }
 
 

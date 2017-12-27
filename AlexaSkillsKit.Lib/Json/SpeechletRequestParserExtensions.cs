@@ -1,4 +1,5 @@
-﻿using AlexaSkillsKit.Speechlet;
+﻿using AlexaSkillsKit.Interfaces.AudioPlayer;
+using AlexaSkillsKit.Speechlet;
 
 namespace AlexaSkillsKit.Json
 {
@@ -19,7 +20,7 @@ namespace AlexaSkillsKit.Json
         }
 
         public static void AddSystem(this SpeechletRequestParser parser) {
-            parser.AddInterface("System", (subtype, json) => {
+            parser.AddInterface(SystemRequest.TypeName, (subtype, json) => {
                 switch (subtype) {
                     case "ExceptionEncountered":
                         return new SystemExceptionEncounteredRequest(subtype, json);
@@ -29,7 +30,7 @@ namespace AlexaSkillsKit.Json
         }
 
         public static void AddAudioPlayer(this SpeechletRequestParser parser) {
-            parser.AddInterface("AudioPlayer", (subtype, json) => {
+            parser.AddInterface(AudioPlayerRequest.TypeName, (subtype, json) => {
                 switch (subtype) {
                     case "PlaybackFailed":
                         return new AudioPlayerPlaybackFailedRequest(subtype, json);
@@ -40,11 +41,11 @@ namespace AlexaSkillsKit.Json
         }
 
         public static void AddPlaybackController(this SpeechletRequestParser parser) {
-            parser.AddInterface("PlaybackController", (subtype, json) => new PlaybackControllerRequest(subtype, json));
+            parser.AddInterface(PlaybackControllerRequest.TypeName, (subtype, json) => new PlaybackControllerRequest(subtype, json));
         }
 
         public static void AddDisplay(this SpeechletRequestParser parser) {
-            parser.AddInterface("Display", (subtype, json) => new DisplayRequest(subtype, json));
+            parser.AddInterface(DisplayRequest.TypeName, (subtype, json) => new DisplayRequest(subtype, json));
         }
     }
 }
