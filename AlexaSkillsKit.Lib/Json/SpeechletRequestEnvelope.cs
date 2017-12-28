@@ -3,14 +3,23 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using AlexaSkillsKit.Helpers;
 using AlexaSkillsKit.Speechlet;
-using AlexaSkillsKit.Slu;
+using AlexaSkillsKit.Authentication;
 
 namespace AlexaSkillsKit.Json
 {
     public class SpeechletRequestEnvelope
     {
+        public static SpeechletRequestParser RequestParser { get; } = new SpeechletRequestParser();
+
+        static SpeechletRequestEnvelope() {
+            RequestParser.AddStandard();
+            RequestParser.AddSystem();
+            RequestParser.AddAudioPlayer();
+            RequestParser.AddPlaybackController();
+            RequestParser.AddDisplay();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -18,7 +27,7 @@ namespace AlexaSkillsKit.Json
         /// <returns></returns>
         public static SpeechletRequestEnvelope FromJson(string content) {
             if (String.IsNullOrEmpty(content)) {
-                throw new SpeechletException("Request content is empty");
+                throw new SpeechletValidationException(SpeechletRequestValidationResult.NoContent, "Request content is empty");
             }
 
             JObject json = JsonConvert.DeserializeObject<JObject>(content, Sdk.DeserializationSettings);
@@ -34,87 +43,15 @@ namespace AlexaSkillsKit.Json
         public static SpeechletRequestEnvelope FromJson(JObject json) {
             var version = json.Value<string>("version");
             if (version != null && version != Sdk.VERSION) {
-                throw new SpeechletException("Request must conform to 1.0 schema.");
+                throw new SpeechletValidationException(SpeechletRequestValidationResult.InvalidVersion, "Request must conform to 1.0 schema.");
             }
 
             return new SpeechletRequestEnvelope {
                 Version = version,
-                Request = RequestFromJson(json.Value<JObject>("request")),
+                Request = RequestParser.Parse(json.Value<JObject>("request")),
                 Session = Session.FromJson(json.Value<JObject>("session")),
                 Context = Context.FromJson(json.Value<JObject>("context"))
             };
-        }
-
-
-        private static SpeechletRequest RequestFromJson(JObject json) {
-            SpeechletRequest request;
-            var requestTypeParts = json?.Value<string>("type")?.Split('.');
-            if (requestTypeParts == null) {
-                throw new ArgumentException("json");
-            }
-
-            var requestType = requestTypeParts[0];
-            var requestSubType = requestTypeParts.Length > 1 ? requestTypeParts[1] : null;
-
-            var requestId = json.Value<string>("requestId");
-            var timestamp = DateTimeHelpers.FromAlexaTimestamp(json);
-            var locale = json.Value<string>("locale");
-            switch (requestType) {
-                case "LaunchRequest":
-                    request = new LaunchRequest(requestId, timestamp, locale);
-                    break;
-                case "IntentRequest":
-                    IntentRequest.DialogStateEnum dialogState = IntentRequest.DialogStateEnum.NONE;
-                    Enum.TryParse(json.Value<string>("dialogState"), out dialogState);
-                    var intent = Intent.FromJson(json.Value<JObject>("intent"));
-                    request = new IntentRequest(requestId, timestamp, locale, intent, dialogState);
-                    break;
-                case "SessionStartedRequest":
-                    request = new SessionStartedRequest(requestId, timestamp, locale);
-                    break;
-                case "SessionEndedRequest":
-                    SessionEndedRequest.ReasonEnum reason = SessionEndedRequest.ReasonEnum.NONE;
-                    Enum.TryParse(json.Value<string>("reason"), out reason);
-                    var sessionError = Error.FromJson(json.Value<JObject>("error"));
-                    request = new SessionEndedRequest(requestId, timestamp, locale, reason, sessionError);
-                    break;
-                case "AudioPlayer":
-                    var token = json.Value<string>("token");
-                    var offset = json.Value<long?>("offsetInMilliseconds");
-                    var playbackError = Error.FromJson(json.Value<JObject>("error"));
-                    var currentPlaybackState = PlaybackState.FromJson(json.Value<JObject>("currentPlaybackState"));
-                    switch (requestSubType) {
-                        case "PlaybackFailed":
-                            request = new AudioPlayerPlaybackFailedRequest(requestId, timestamp, locale, requestSubType, token, playbackError, currentPlaybackState);
-                            break;
-                        default:
-                            request = new AudioPlayerRequest(requestId, timestamp, locale, requestSubType, token, offset);
-                            break;
-                    }
-                    break;
-                case "PlaybackController":
-                    request = new PlaybackControllerRequest(requestId, timestamp, locale, requestSubType);
-                    break;
-                case "Display":
-                    var listItemToken = json.Value<string>("token");
-                    request = new DisplayRequest(requestId, timestamp, locale, requestSubType, listItemToken);
-                    break;
-                case "System":
-                    switch (requestSubType) {
-                        case "ExceptionEncountered":
-                            var systemError = Error.FromJson(json.Value<JObject>("error"));
-                            var cause = Cause.FromJson(json.Value<JObject>("cause"));
-                            request = new SystemExceptionEncounteredRequest(requestId, timestamp, locale, requestSubType, systemError, cause);
-                            break;
-                        default:
-                            throw new ArgumentException("json");
-                    }
-                    break;
-                default:
-                    throw new ArgumentException("json");
-            }
-
-            return request;
         }
 
 

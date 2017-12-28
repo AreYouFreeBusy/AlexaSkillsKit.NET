@@ -1,16 +1,18 @@
-﻿using System;
+﻿using AlexaSkillsKit.Speechlet;
+using Newtonsoft.Json.Linq;
 
-namespace AlexaSkillsKit.Speechlet
+namespace AlexaSkillsKit.Interfaces.AudioPlayer
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#requests
     /// </summary>
     public class AudioPlayerRequest : ExtendedSpeechletRequest
     {
-        public AudioPlayerRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, long? offsetInMilliseconds = null)
-            : base(requestId, timestamp, locale, subtype) {
-            Token = token;
-            OffsetInMilliseconds = offsetInMilliseconds;
+        public static readonly string TypeName = "AudioPlayer";
+
+        public AudioPlayerRequest(string subtype, JObject json) : base(TypeName, subtype, json) {
+            Token = json.Value<string>("token");
+            OffsetInMilliseconds = json.Value<long?>("offsetInMilliseconds");
         }
 
         public string Token {

@@ -1,16 +1,18 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using System;
 using AlexaSkillsKit.Slu;
+using Newtonsoft.Json.Linq;
+using System;
 
 namespace AlexaSkillsKit.Speechlet
 {
     public class IntentRequest : SpeechletRequest
     {
-        public IntentRequest(string requestId, DateTime timestamp, string locale, Intent intent, DialogStateEnum dialogState)  
-            : base(requestId, timestamp, locale) {
+        public IntentRequest(JObject json) : base(json) {
+            Intent = Intent.FromJson(json.Value<JObject>("intent"));
 
-            Intent = intent;
+            DialogStateEnum dialogState = DialogStateEnum.UNKNOWN;
+            Enum.TryParse(json.Value<string>("dialogState"), out dialogState);
             DialogState = dialogState;
         }
 
@@ -19,15 +21,14 @@ namespace AlexaSkillsKit.Speechlet
             private set;
         }
 
-        public virtual DialogStateEnum DialogState
-        {
+        public virtual DialogStateEnum DialogState {
             get;
             private set;
         }
 
         public enum DialogStateEnum
         {
-            NONE = 0, // default in case parsing fails
+            UNKNOWN = 0, // default in case parsing fails
             STARTED,
             IN_PROGRESS,
             COMPLETED
