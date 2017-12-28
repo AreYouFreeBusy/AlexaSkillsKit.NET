@@ -4,6 +4,7 @@ using AlexaSkillsKit.Authentication;
 using AlexaSkillsKit.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace AlexaSkillsKit.Speechlet
@@ -15,6 +16,21 @@ namespace AlexaSkillsKit.Speechlet
         protected SpeechletBase() {
             Service = new SpeechletService(this);
         }
+
+
+        /// <summary>
+        /// Processes Alexa request AND validates request signature
+        /// </summary>
+        /// <param name="httpRequest"></param>
+        /// <returns></returns>
+        public HttpResponseMessage GetResponse(HttpRequestMessage httpRequest) {
+            return AsyncHelpers.RunSync(async () => await Service.GetResponseAsync(httpRequest));
+        }
+
+        public async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage httpRequest) {
+            return await Service.GetResponseAsync(httpRequest);
+        }
+
 
         /// <summary>
         /// Processes Alexa request but does NOT validate request signature 

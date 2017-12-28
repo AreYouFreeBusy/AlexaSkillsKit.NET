@@ -114,14 +114,16 @@
     <Compile Include="Speechlet\Error.cs" />
     <Compile Include="Speechlet\ExtendedSpeechletRequest.cs" />
     <Compile Include="Speechlet\IntentRequest.cs" />
+    <Compile Include="Speechlet\ISpeechletV2.cs" />
     <Compile Include="Speechlet\ISpeechlet.cs" />
+    <Compile Include="Speechlet\ISpeechletAsyncV2.cs" />
     <Compile Include="Speechlet\ISpeechletAsync.cs" />
     <Compile Include="Speechlet\ISpeechletBase.cs" />
     <Compile Include="Speechlet\ISpeechletInterface.cs" />
     <Compile Include="Speechlet\ISpeechletInterfaceState.cs" />
     <Compile Include="Speechlet\ISpeechletResponse.cs" />
     <Compile Include="Speechlet\LaunchRequest.cs" />
-    <Compile Include="Speechlet\PlaybackControllerRequest.cs" />
+    <Compile Include="Interfaces\AudioPlayer\PlaybackControllerRequest.cs" />
     <Compile Include="Speechlet\PlaybackState.cs" />
     <Compile Include="Speechlet\Session.cs" />
     <Compile Include="Speechlet\SessionEndedRequest.cs" />
@@ -137,7 +139,6 @@
     <Compile Include="Speechlet\SupportedInterfaces.cs" />
     <Compile Include="Speechlet\SystemRequest.cs" />
     <Compile Include="Speechlet\SystemExceptionEncounteredRequest.cs" />
-    <Compile Include="Speechlet\SystemNetHttpExtensions.cs" />
     <Compile Include="Speechlet\SystemState.cs" />
     <Compile Include="Speechlet\User.cs" />
     <Compile Include="UI\Image.cs" />

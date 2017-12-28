@@ -7,6 +7,9 @@ using AlexaSkillsKit.Json;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,6 +56,43 @@ namespace AlexaSkillsKit.Speechlet
                     return (speechlet as IDisplaySpeechlet).OnDisplay(request, context) ??
                         await (speechlet as IDisplaySpeechletAsync).OnDisplayAsync(request, context);
                 });
+            }
+        }
+
+
+        /// <summary>
+        /// Processes Alexa request AND validates request signature
+        /// </summary>
+        /// <param name="httpRequest"></param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage httpRequest) {
+            string chainUrl = null;
+            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER)) {
+                chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).FirstOrDefault(x => !string.IsNullOrEmpty(x));
+            }
+
+            string signature = null;
+            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
+                signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).FirstOrDefault(x => !string.IsNullOrEmpty(x));
+            }
+
+            var content = await httpRequest.Content.ReadAsStringAsync();
+
+            try {
+                var alexaRequest = await GetRequestAsync(content, chainUrl, signature);
+                var alexaResponse = await ProcessRequestAsync(alexaRequest);
+                var json = alexaResponse?.ToJson();
+
+                return (json == null) ?
+                    new HttpResponseMessage(HttpStatusCode.InternalServerError) :
+                    new HttpResponseMessage(HttpStatusCode.OK) {
+                        Content = new StringContent(json, Encoding.UTF8, "application/json")
+                    };
+            }
+            catch (SpeechletValidationException ex) {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest) {
+                    ReasonPhrase = ex.ValidationResult.ToString()
+                };
             }
         }
 
@@ -146,6 +186,8 @@ namespace AlexaSkillsKit.Speechlet
 
                 if (session.IsNew) {
                     var sessionStartedRequest = new SessionStartedRequest(request);
+                    (speechlet as ISpeechletV2)?.OnSessionStarted(sessionStartedRequest, session);
+                    await (speechlet as ISpeechletAsyncV2)?.OnSessionStartedAsync(sessionStartedRequest, session);
                     (speechlet as ISpeechlet)?.OnSessionStarted(sessionStartedRequest, session);
                     await (speechlet as ISpeechletAsync)?.OnSessionStartedAsync(sessionStartedRequest, session);
                 }
@@ -153,18 +195,24 @@ namespace AlexaSkillsKit.Speechlet
 
             // process launch request
             if (request is LaunchRequest) {
-                return (speechlet as ISpeechlet)?.OnLaunch(request as LaunchRequest, session) ??
+                return (speechlet as ISpeechletV2)?.OnLaunch(request as LaunchRequest, session) ??
+                    await (speechlet as ISpeechletAsyncV2)?.OnLaunchAsync(request as LaunchRequest, session) ??
+                    (speechlet as ISpeechlet)?.OnLaunch(request as LaunchRequest, session) ??
                     await (speechlet as ISpeechletAsync)?.OnLaunchAsync(request as LaunchRequest, session);
             }
 
             // process intent request
             else if (request is IntentRequest) {
-                return (speechlet as ISpeechlet)?.OnIntent(request as IntentRequest, session, context) ??
-                    await (speechlet as ISpeechletAsync)?.OnIntentAsync(request as IntentRequest, session, context);
+                return (speechlet as ISpeechletV2)?.OnIntent(request as IntentRequest, session, context) ??
+                    await (speechlet as ISpeechletAsyncV2)?.OnIntentAsync(request as IntentRequest, session, context) ??
+                    (speechlet as ISpeechlet)?.OnIntent(request as IntentRequest, session) ??
+                    await (speechlet as ISpeechletAsync)?.OnIntentAsync(request as IntentRequest, session);
             }
 
             // process session ended request
             else if (request is SessionEndedRequest) {
+                (speechlet as ISpeechletV2)?.OnSessionEnded(request as SessionEndedRequest, session);
+                await (speechlet as ISpeechletAsyncV2)?.OnSessionEndedAsync(request as SessionEndedRequest, session);
                 (speechlet as ISpeechlet)?.OnSessionEnded(request as SessionEndedRequest, session);
                 await (speechlet as ISpeechletAsync)?.OnSessionEndedAsync(request as SessionEndedRequest, session);
             }
