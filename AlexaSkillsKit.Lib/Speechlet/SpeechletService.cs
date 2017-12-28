@@ -168,6 +168,10 @@ namespace AlexaSkillsKit.Speechlet
                 await HandleStandardRequestAsync(request, session, context) :
                 await HandleExtendedRequestAsync(request as ExtendedSpeechletRequest, context);
 
+            if (response == null) {
+                response = new SpeechletResponse();
+            }
+
             var responseEnvelope = new SpeechletResponseEnvelope {
                 Version = requestEnvelope.Version,
                 Response = response,

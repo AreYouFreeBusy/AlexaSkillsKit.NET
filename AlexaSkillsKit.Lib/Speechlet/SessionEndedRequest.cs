@@ -27,6 +27,7 @@ namespace AlexaSkillsKit.Speechlet
 
         public enum ReasonEnum
         {
+            NONE = 0, // default in case parsing fails (backwards compatibility)
             UNKNOWN = 0, // default in case parsing fails
             ERROR,
             USER_INITIATED,

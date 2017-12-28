@@ -110,7 +110,7 @@
     <Compile Include="Speechlet\Context.cs" />
     <Compile Include="Speechlet\Device.cs" />
     <Compile Include="Speechlet\Directive.cs" />
-    <Compile Include="Speechlet\DisplayRequest.cs" />
+    <Compile Include="Interfaces\Display\DisplayRequest.cs" />
     <Compile Include="Speechlet\Error.cs" />
     <Compile Include="Speechlet\ExtendedSpeechletRequest.cs" />
     <Compile Include="Speechlet\IntentRequest.cs" />

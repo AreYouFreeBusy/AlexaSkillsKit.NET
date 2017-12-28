@@ -1,6 +1,5 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using AlexaSkillsKit.Speechlet;
 using System.Net.Http;
 using System.Web.Http;
 

@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using AlexaSkillsKit.Speechlet;
+using Newtonsoft.Json.Linq;
 
-namespace AlexaSkillsKit.Speechlet
+namespace AlexaSkillsKit.Interfaces.Display
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/display-interface-reference.html#touch-selection-events
