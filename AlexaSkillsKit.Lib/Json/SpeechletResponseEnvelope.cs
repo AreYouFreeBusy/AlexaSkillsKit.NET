@@ -1,9 +1,7 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using AlexaSkillsKit.Speechlet;
 
 namespace AlexaSkillsKit.Json
@@ -12,7 +10,7 @@ namespace AlexaSkillsKit.Json
     {
         private static JsonSerializerSettings _serializerSettings = new JsonSerializerSettings() {
             NullValueHandling = NullValueHandling.Ignore, 
-            ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new CamelCasePropertyNamesExceptDictionaryKeysContractResolver(),
             Converters = new List<JsonConverter> { new Newtonsoft.Json.Converters.StringEnumConverter() }
         };
 
@@ -26,7 +24,7 @@ namespace AlexaSkillsKit.Json
         }
 
 
-        public virtual SpeechletResponse Response {
+        public virtual ISpeechletResponse Response {
             get;
             set;
         }

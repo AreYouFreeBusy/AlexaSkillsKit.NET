@@ -17,6 +17,8 @@ namespace AlexaSkillsKit.Speechlet
         /// <param name="json"></param>
         /// <returns></returns>
         public static Session FromJson(JObject json) {
+            if (json == null) return null;
+
             var attributes = new Dictionary<string, string>();
             var jsonAttributes = json.Value<JObject>("attributes");
             if (jsonAttributes != null) {
@@ -61,7 +63,7 @@ namespace AlexaSkillsKit.Speechlet
 
         public virtual string[] IntentSequence {
             get {
-                return String.IsNullOrEmpty(Attributes[INTENT_SEQUENCE]) ?
+                return !Attributes.ContainsKey(INTENT_SEQUENCE) || String.IsNullOrEmpty(Attributes[INTENT_SEQUENCE]) ?
                     new string[0] : 
                     Attributes[INTENT_SEQUENCE].Split(
                         new string[1] { SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
