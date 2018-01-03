@@ -39,8 +39,8 @@ namespace AlexaSkillsKit.Speechlet
             return speechlet.OnIntent(intentRequest, session, context);
         }
 
-        public async Task<SpeechletResponse> OnLaunchAsync(LaunchRequest launchRequest, Session session) {
-            return speechlet.OnLaunch(launchRequest, session);
+        public async Task<SpeechletResponse> OnLaunchAsync(LaunchRequest launchRequest, Session session, Context context) {
+            return speechlet.OnLaunch(launchRequest, session, context);
         }
 
         public async Task OnSessionEndedAsync(SessionEndedRequest sessionEndedRequest, Session session) {

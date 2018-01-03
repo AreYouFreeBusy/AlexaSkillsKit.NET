@@ -43,7 +43,7 @@ namespace Sample.Controllers
         }
 
 
-        public override SpeechletResponse OnLaunch(LaunchRequest request, Session session) {
+        public override SpeechletResponse OnLaunch(LaunchRequest request, Session session, Context context) {
             Log.Info("OnLaunch requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
             return GetWelcomeResponse();
         }
