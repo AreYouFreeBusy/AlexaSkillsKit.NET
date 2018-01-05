@@ -16,7 +16,7 @@ namespace AlexaSkillsKit.Speechlet
         public abstract Task OnSystemExceptionEncounteredAsync(SystemExceptionEncounteredRequest systemRequest, Context context);
 
         public abstract Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session, Context context);
-        public abstract Task<SpeechletResponse> OnLaunchAsync(LaunchRequest launchRequest, Session session);
+        public abstract Task<SpeechletResponse> OnLaunchAsync(LaunchRequest launchRequest, Session session, Context context);
         public abstract Task OnSessionEndedAsync(SessionEndedRequest sessionEndedRequest, Session session);
         public abstract Task OnSessionStartedAsync(SessionStartedRequest sessionStartedRequest, Session session);
     }

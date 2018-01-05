@@ -17,12 +17,12 @@ namespace AlexaSkillsKit.Speechlet
         /// <returns></returns>
         public static async Task<HttpResponseMessage> GetResponseAsync(this SpeechletService service, HttpRequestMessage httpRequest) {
             string chainUrl = null;
-            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER)) {
+            if (httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER)) {
                 chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).FirstOrDefault(x => !string.IsNullOrEmpty(x));
             }
 
             string signature = null;
-            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
+            if (httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
                 signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).FirstOrDefault(x => !string.IsNullOrEmpty(x));
             }
 

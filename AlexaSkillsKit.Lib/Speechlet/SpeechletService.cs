@@ -92,7 +92,7 @@ namespace AlexaSkillsKit.Speechlet
 
             // process launch request
             if (requestEnvelope.Request is LaunchRequest) {
-                response = await speechlet?.OnLaunchAsync(request as LaunchRequest, session);
+                response = await speechlet?.OnLaunchAsync(request as LaunchRequest, session, context);
             }
 
             // process audio player request

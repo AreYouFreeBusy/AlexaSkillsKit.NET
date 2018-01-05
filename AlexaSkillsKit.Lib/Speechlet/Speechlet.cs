@@ -14,7 +14,7 @@ namespace AlexaSkillsKit.Speechlet
         public abstract void OnSystemExceptionEncountered(SystemExceptionEncounteredRequest systemRequest, Context context);
 
         public abstract SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
-        public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
+        public abstract SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session, Context context);
         public abstract void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
         public abstract void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);
     }
