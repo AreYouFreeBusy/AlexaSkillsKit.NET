@@ -116,7 +116,7 @@
     <Compile Include="Speechlet\IntentRequest.cs" />
     <Compile Include="Speechlet\ISpeechletWithContext.cs" />
     <Compile Include="Speechlet\ISpeechlet.cs" />
-    <Compile Include="Speechlet\ISpeechletAsyncWithContext.cs" />
+    <Compile Include="Speechlet\ISpeechletWithContextAsync.cs" />
     <Compile Include="Speechlet\ISpeechletAsync.cs" />
     <Compile Include="Speechlet\ISpeechletBase.cs" />
     <Compile Include="Speechlet\ISpeechletInterface.cs" />
