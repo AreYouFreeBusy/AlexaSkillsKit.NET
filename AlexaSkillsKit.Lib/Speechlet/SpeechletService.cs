@@ -67,12 +67,12 @@ namespace AlexaSkillsKit.Speechlet
         /// <returns></returns>
         public async Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage httpRequest) {
             string chainUrl = null;
-            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER)) {
+            if (httpRequest.Headers.Contains(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER)) {
                 chainUrl = httpRequest.Headers.GetValues(Sdk.SIGNATURE_CERT_URL_REQUEST_HEADER).FirstOrDefault(x => !string.IsNullOrEmpty(x));
             }
 
             string signature = null;
-            if (!httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
+            if (httpRequest.Headers.Contains(Sdk.SIGNATURE_REQUEST_HEADER)) {
                 signature = httpRequest.Headers.GetValues(Sdk.SIGNATURE_REQUEST_HEADER).FirstOrDefault(x => !string.IsNullOrEmpty(x));
             }
 
@@ -190,8 +190,8 @@ namespace AlexaSkillsKit.Speechlet
 
                 if (session.IsNew) {
                     var sessionStartedRequest = new SessionStartedRequest(request);
-                    (speechlet as ISpeechletV2)?.OnSessionStarted(sessionStartedRequest, session);
-                    await (speechlet as ISpeechletAsyncV2)?.OnSessionStartedAsync(sessionStartedRequest, session);
+                    (speechlet as ISpeechletWithContext)?.OnSessionStarted(sessionStartedRequest, session, context);
+                    await (speechlet as ISpeechletWithContextAsync)?.OnSessionStartedAsync(sessionStartedRequest, session, context);
                     (speechlet as ISpeechlet)?.OnSessionStarted(sessionStartedRequest, session);
                     await (speechlet as ISpeechletAsync)?.OnSessionStartedAsync(sessionStartedRequest, session);
                 }
@@ -199,24 +199,24 @@ namespace AlexaSkillsKit.Speechlet
 
             // process launch request
             if (request is LaunchRequest) {
-                return (speechlet as ISpeechletV2)?.OnLaunch(request as LaunchRequest, session) ??
-                    await (speechlet as ISpeechletAsyncV2)?.OnLaunchAsync(request as LaunchRequest, session) ??
+                return (speechlet as ISpeechletWithContext)?.OnLaunch(request as LaunchRequest, session, context) ??
+                    await (speechlet as ISpeechletWithContextAsync)?.OnLaunchAsync(request as LaunchRequest, session, context) ??
                     (speechlet as ISpeechlet)?.OnLaunch(request as LaunchRequest, session) ??
                     await (speechlet as ISpeechletAsync)?.OnLaunchAsync(request as LaunchRequest, session);
             }
 
             // process intent request
             else if (request is IntentRequest) {
-                return (speechlet as ISpeechletV2)?.OnIntent(request as IntentRequest, session, context) ??
-                    await (speechlet as ISpeechletAsyncV2)?.OnIntentAsync(request as IntentRequest, session, context) ??
+                return (speechlet as ISpeechletWithContext)?.OnIntent(request as IntentRequest, session, context) ??
+                    await (speechlet as ISpeechletWithContextAsync)?.OnIntentAsync(request as IntentRequest, session, context) ??
                     (speechlet as ISpeechlet)?.OnIntent(request as IntentRequest, session) ??
                     await (speechlet as ISpeechletAsync)?.OnIntentAsync(request as IntentRequest, session);
             }
 
             // process session ended request
             else if (request is SessionEndedRequest) {
-                (speechlet as ISpeechletV2)?.OnSessionEnded(request as SessionEndedRequest, session);
-                await (speechlet as ISpeechletAsyncV2)?.OnSessionEndedAsync(request as SessionEndedRequest, session);
+                (speechlet as ISpeechletWithContext)?.OnSessionEnded(request as SessionEndedRequest, session, context);
+                await (speechlet as ISpeechletWithContextAsync)?.OnSessionEndedAsync(request as SessionEndedRequest, session, context);
                 (speechlet as ISpeechlet)?.OnSessionEnded(request as SessionEndedRequest, session);
                 await (speechlet as ISpeechletAsync)?.OnSessionEndedAsync(request as SessionEndedRequest, session);
             }

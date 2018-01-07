@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AlexaSkillsKit.Speechlet
 {
-    [Obsolete("Does not support context object. Derive from SpeechletBase instead and implement ISpeechletAsyncV2")]
+    [Obsolete("Does not support context object. Derive from SpeechletBase instead and implement ISpeechletWithContextAsync")]
     public abstract class SpeechletAsync : SpeechletBase, ISpeechletAsync
     {
         public abstract Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session);
