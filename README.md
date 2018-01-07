@@ -32,10 +32,10 @@ Note, that if you are hosting your API in Amazon Lambda, Azure Function, Azure W
 
 ### 2. Implement your skill as a "Speechlet"
 
-If your Alexa skill does any kind of asynchronous I/O, it's recommended that you derive your app from the `SpeechletBase` class and implement these methods as defined by `ISpeechletAsyncV2`:
+If your Alexa skill does any kind of asynchronous I/O, it's recommended that you derive your app from the `SpeechletBase` class and implement these methods as defined by `ISpeechletWithContextAsync`:
   
 ```csharp
-public interface ISpeechletAsyncV2
+public interface ISpeechletWithContextAsync
 {
     Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session, Context context);
     Task<SpeechletResponse> OnLaunchAsync(LaunchRequest launchRequest, Session session);
@@ -44,10 +44,10 @@ public interface ISpeechletAsyncV2
 }
 ```
   
-Alternatively, you can implement synchronous `ISpeechletV2` interface:
+Alternatively, you can implement synchronous `ISpeechletWithContext` interface:
   
 ```csharp
-public interface ISpeechletV2
+public interface ISpeechletWithContext
 {
     SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
     SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
