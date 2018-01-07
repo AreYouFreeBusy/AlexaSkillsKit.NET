@@ -10,6 +10,13 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class SpeechletResponse : ISpeechletResponse
     {
+        /// <summary>
+        /// Set default ShouldEndSession value to false for the sake of backwards compatibility
+        /// </summary>
+        public SpeechletResponse() {
+            ShouldEndSession = false;
+        }
+
         public virtual Card Card {
             get;
             set;

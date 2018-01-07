@@ -3,10 +3,20 @@
 * handles the (de)serialization of Alexa requests & responses into easy-to-use object models
 * verifies authenticity of the request by validating its signature and timestamp
 * code-reviewed and vetted by Amazon (Alexa skills written using this library passed certification)
+* :new: supports following interfaces:
+  * [AudioPlayer](https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html)
+  * [PlaybackController](https://developer.amazon.com/docs/custom-skills/playback-controller-interface-reference.html)
+  * [Display](https://developer.amazon.com/docs/custom-skills/display-interface-reference.html)
+  * [Dialog](https://developer.amazon.com/docs/custom-skills/dialog-interface-reference.html)
+  * [VideoApp](https://developer.amazon.com/docs/custom-skills/videoapp-interface-reference.html)
+  
 
 Beyond the functionality in Amazon's AlexaSkillsKit for Java, AlexaSkillsKit.NET:
 * performs automatic session management so you can easily [build conversational Alexa apps](https://freebusy.io/blog/building-conversational-alexa-apps-for-amazon-echo)
-
+* supports asynchronous programming model
+* :new: can be extended to support custom and new coming interfaces and request types
+(see [Implement external interface](#implement-external-interface) section), such as:
+  * [Skill Events](https://developer.amazon.com/docs/smapi/skill-events-in-alexa-skills.html)
 
 This library was originally developed for and is in use at https://freebusy.io
 
@@ -18,31 +28,40 @@ This library is available as a NuGet package at https://www.nuget.org/packages/A
 
 Read [Getting started with Alexa App development for Amazon Echo using .NET on Windows](https://freebusy.io/blog/getting-started-with-alexa-app-development-for-amazon-echo-using-dot-net)
 
+Note, that if you are hosting your API in Amazon Lambda, Azure Function, Azure Web App or other well-known cloud service, you can use parent domain certificate instead of providing your own.
+
 ### 2. Implement your skill as a "Speechlet"
 
-If your Alexa skill does any kind of I/O and assuming you're building on top of .NET Framework 4.5 it's recommended that you derive your app from the abstract SpeechletAsync and implement these methods as defined by ISpeechletAsync
+If your Alexa skill does any kind of asynchronous I/O, it's recommended that you derive your app from the `SpeechletBase` class and implement these methods as defined by `ISpeechletAsyncV2`:
   
 ```csharp
-public interface ISpeechletAsync
+public interface ISpeechletAsyncV2
 {
-    Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session);
+    Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session, Context context);
     Task<SpeechletResponse> OnLaunchAsync(LaunchRequest launchRequest, Session session);
     Task OnSessionStartedAsync(SessionStartedRequest sessionStartedRequest, Session session);
     Task OnSessionEndedAsync(SessionEndedRequest sessionEndedRequest, Session session);
 }
 ```
   
-Or derive your app from the abstract Speechlet and implement these methods as defined by ISpeechlet.
+Alternatively, you can implement synchronous `ISpeechletV2` interface:
   
 ```csharp
-public interface ISpeechlet
+public interface ISpeechletV2
 {
-    SpeechletResponse OnIntent(IntentRequest intentRequest, Session session);
+    SpeechletResponse OnIntent(IntentRequest intentRequest, Session session, Context context);
     SpeechletResponse OnLaunch(LaunchRequest launchRequest, Session session);
     void OnSessionStarted(SessionStartedRequest sessionStartedRequest, Session session);
     void OnSessionEnded(SessionEndedRequest sessionEndedRequest, Session session);
 }
 ```
+
+To handle external interface requests, your speechlet can implement additional interfaces either synchronous or asynchronous:
+* `IAudioPlayerSpeechletAsync` or `IAudioPlayerSpeechlet` for "AudioPlayer.*" and "PlaybackController.*" requests.
+* `IDisplaySpeechletAsync` or `IDisplaySpeechlet` for "Display.*" requests.
+
+For backwards compatibility `Speechlet` and `SpeechletAsync` abstract classes are still available, along with deprecated `ISpeechlet` and `ISpeechletAsync` interfaces.
+Note, that old interfaces don't support [Context object](https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#context-object).
   
 Take a look at https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET/blob/master/AlexaSkillsKit.Sample/Speechlet/SampleSessionSpeechlet.cs for an example.
 
@@ -54,11 +73,50 @@ The Sample app is using ASP.NET 4.5 WebApi 2 so wiring-up requests & responses f
 
 Alternatively you can host your app and the AlexaSkillsKit.NET library in any other web service framework like ServiceStack.
 
+# How it works
+
+### SpeechletService class
+To handle Alexa requests an instance of `SpeechletService` is used. This is the main entry point for all operations involved in handling incoming requests.
+
+For convenience and backward compatibility both `Speechlet` and `SpeechletAsync` now derive from `SpeechletBase` base class,
+which provides built-in `SpeechletService` instance and wraps most common operations with it.
+Skill authors can access this internal `SpeechletService` through `Service` property, e.g. to register additional request handlers.
+
+### Parsing request
+
+When new request is recieved, it first needs to be parced from json string into object model represented by `SpeechletRequestEnvelope` class.
+`Task<SpeechletRequestEnvelope> SpeechletService.GetRequestAsync(string content, string chainUrl, string signature)` method is used for this.
+Request headers and body validation also takes place during this step. The `SpeechletValidationException` is produced in case of any validation error.
+
+See [Override request validation policy](#override-request-validation-policy) for more details on request validation.
+Request validation can be omitted by directly calling one of `SpeechletRequestEnvelope.FromJson` static methods.
+
+Only version "1.0" of Alexa Skill API is supported. Otherwise `SpeechletValidationException` with `SpeechletRequestValidationResult.InvalidVersion` is thrown.
+Same is true, when calling `SpeechletRequestEnvelope.FromJson` methods directly.
+
+There are a lot of different request types available for Alexa Skills.
+Standard requests have simple type names: "LaunchRequest", "IntentRequest", "SessionEndedRequest".
+All other requests are related to specific interfaces and their request type name consists of interface name and request subtype name separated by "." sign,
+e.g. "System.ExceptionEncountered", "Dialog.Delegate" and so on.
+ 
+`SpeechletRequestParser` class is used to deserialize `request` json field to appropriate subclass of `SpeechletRequest` base class.
+By default, it has no knowledge to which class each request type should be deserialized.
+`SpeechletRequestParser` has `AddInterface` method to bind interface name, with specific deserializagion handler.
+
+`SpeechletRequestEnvelope` currently uses it's static instance of `SpeechletRequestParser` for request deserialization,
+provided as `SpeechletRequestEnvelope.RequestParser` static property.
+Use it, if you need to register deserialization method for additional request type.
+
+Deserialization methods for all natively supported requests are registered internally by default.
+
 ## Advanced
 
 ### Override request validation policy
 
-By default, requests with missing or invalid signatures, or with missing or too old timestamps, are rejected. You can override the request validation policy if you'd like not to reject the request in certain conditions and/or to log validation failures.
+By default, requests with missing or invalid signatures, or with missing or too old timestamps,
+unsupported API version (only API v"1.0" is supported), are rejected.
+For Application Id to be validated, your skill needs to set value for `SpeechletService.ApplicationId` property. 
+You can override the request validation policy if you'd like not to reject the request in certain conditions and/or to log validation failures.
 
 ```csharp
 /// <summary>

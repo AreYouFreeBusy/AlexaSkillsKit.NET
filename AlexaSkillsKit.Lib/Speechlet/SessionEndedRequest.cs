@@ -1,16 +1,18 @@
 ﻿//  Copyright 2015 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
 
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace AlexaSkillsKit.Speechlet
 {
     public class SessionEndedRequest : SpeechletRequest
     {
-        public SessionEndedRequest(string requestId, DateTime timestamp, string locale, ReasonEnum reason, Error error)
-            : base(requestId, timestamp, locale) {
+        public SessionEndedRequest(JObject json) : base(json) {
 
+            ReasonEnum reason = ReasonEnum.UNKNOWN;
+            Enum.TryParse(json.Value<string>("reason"), out reason);
             Reason = reason;
-            Error = error;
+            Error = Error.FromJson(json.Value<JObject>("error"));
         }
 
         public virtual ReasonEnum Reason {
@@ -25,7 +27,8 @@ namespace AlexaSkillsKit.Speechlet
 
         public enum ReasonEnum
         {
-            NONE = 0, // default in case parsing fails
+            NONE = 0, // default in case parsing fails (backwards compatibility)
+            UNKNOWN = 0, // default in case parsing fails
             ERROR,
             USER_INITIATED,
             EXCEEDED_MAX_REPROMPTS,

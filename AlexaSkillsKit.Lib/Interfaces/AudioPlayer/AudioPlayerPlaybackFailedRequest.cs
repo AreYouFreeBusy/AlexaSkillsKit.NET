@@ -1,16 +1,16 @@
-﻿using System;
+﻿using AlexaSkillsKit.Speechlet;
+using Newtonsoft.Json.Linq;
 
-namespace AlexaSkillsKit.Speechlet
+namespace AlexaSkillsKit.Interfaces.AudioPlayer
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#playbackfailed
     /// </summary>
     public class AudioPlayerPlaybackFailedRequest : AudioPlayerRequest
     {
-        public AudioPlayerPlaybackFailedRequest(string requestId, DateTime timestamp, string locale, string subtype, string token, Error error, PlaybackState currentPlaybackState)
-            : base(requestId, timestamp, locale, subtype, token) {
-            Error = error;
-            CurrentPlaybackState = currentPlaybackState;
+        public AudioPlayerPlaybackFailedRequest(string subtype, JObject json) : base(subtype, json) {
+            Error = Error.FromJson(json.Value<JObject>("error"));
+            CurrentPlaybackState = PlaybackState.FromJson(json.Value<JObject>("currentPlaybackState"));
         }
 
         public Error Error {

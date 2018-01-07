@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet
 {
     /// <summary>
     /// https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#system-exceptionencountered
     /// </summary>
-    public class SystemExceptionEncounteredRequest : ExtendedSpeechletRequest
+    public class SystemExceptionEncounteredRequest : SystemRequest
     {
-        public SystemExceptionEncounteredRequest(string requestId, DateTime timestamp, string locale, string subtype, Error error, Cause cause)
-            : base(requestId, timestamp, locale, subtype) {
-            Error = error;
-            Cause = Cause;
+        public SystemExceptionEncounteredRequest(string subtype, JObject json) : base(subtype, json) {
+            Error = Error.FromJson(json.Value<JObject>("error"));
+            Cause = Cause.FromJson(json.Value<JObject>("cause"));
         }
 
         public Error Error {

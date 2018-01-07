@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet
 {
@@ -9,9 +9,14 @@ namespace AlexaSkillsKit.Speechlet
     /// </summary>
     public class ExtendedSpeechletRequest : SpeechletRequest
     {
-        public ExtendedSpeechletRequest(string requestId, DateTime timestamp, string locale, string subtype)
-            : base(requestId, timestamp, locale) {
+        public ExtendedSpeechletRequest(string type, string subtype, JObject json) : base(json) {
+            Type = type;
             Subtype = subtype;
+        }
+
+        public string Type {
+            get;
+            private set;
         }
 
         public string Subtype {
