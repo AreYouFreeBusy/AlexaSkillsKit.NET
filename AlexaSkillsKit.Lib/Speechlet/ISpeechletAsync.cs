@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AlexaSkillsKit.Speechlet
 {
-    [Obsolete("Does not support context object. Implement ISpeechletAsyncV2 instead")]
+    [Obsolete("Does not support context object. Implement ISpeechletWithContextAsync instead")]
     public interface ISpeechletAsync : ISpeechletBase
     {
         Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session);
