@@ -164,7 +164,7 @@ namespace AlexaSkillsKit.Speechlet
             var context = requestEnvelope.Context;
             var request = requestEnvelope.Request;
 
-            var response = (request is ExtendedSpeechletRequest) ?
+            var response = !(request is ExtendedSpeechletRequest) ?
                 await HandleStandardRequestAsync(request, session, context) :
                 await HandleExtendedRequestAsync(request as ExtendedSpeechletRequest, context);
 
