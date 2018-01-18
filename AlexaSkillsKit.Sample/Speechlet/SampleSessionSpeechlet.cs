@@ -153,7 +153,6 @@ namespace Sample.Controllers
             // Create the Simple card content.
             SimpleCard card = new SimpleCard();
             card.Title = String.Format("SessionSpeechlet - {0}", title);
-            card.Subtitle = String.Format("SessionSpeechlet - Sub Title");
             card.Content = String.Format("SessionSpeechlet - {0}", output);
 
             // Create the plain text output.

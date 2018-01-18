@@ -8,7 +8,7 @@ namespace AlexaSkillsKit.UI
             get { return "Simple"; }
         }
 
-        public virtual string Title {
+        public override string Title {
             get;
             set;
         }
