@@ -162,3 +162,26 @@ public override bool OnRequestValidation(
     }            
 }
 ```
+
+# Credits
+
+The original author of AlexaSkillsKit.NET is:
+* [Stefan Negritoiu (FreeBusy)](https://github.com/stefann42)
+
+The current authors and maintainers are:
+* [Stefan Negritoiu (FreeBusy)](https://github.com/stefann42)
+* [Sergey Greenko](https://github.com/ElvenMonky)
+
+Thank You to library contributors (in alphbetical order):
+* [Ahmed Osman](https://github.com/q3blend)
+* [dg-racing](https://github.com/dg-racing)
+* [Eric Jernigan](https://github.com/jejernig)
+* [Jasson Moya](https://github.com/Jasc01)
+* [Jayson Helseth](https://github.com/jaysonhelseth)
+* [Marcus Braun](https://github.com/teriansilva)
+* [Matt Becker](https://github.com/MattBecker)
+* [Robert Mroch](https://github.com/epsilon-rmroch)
+* [ruppert92](https://github.com/ruppert92)
+* [Sergey Greenko](https://github.com/ElvenMonky)
+* [Stefan Negritoiu](https://github.com/stefann42)
+* [vp123456](https://github.com/vp123456)

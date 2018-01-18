@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
+
+using System;
 using Xunit;
 using AlexaSkillsKit;
 using AlexaSkillsKit.Authentication;

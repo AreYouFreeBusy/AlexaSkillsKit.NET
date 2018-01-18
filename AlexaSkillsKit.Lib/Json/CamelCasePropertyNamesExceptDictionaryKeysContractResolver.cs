@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
+
+using Newtonsoft.Json.Serialization;
 using System;
 
 namespace AlexaSkillsKit.Json

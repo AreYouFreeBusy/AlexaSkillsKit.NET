@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
+
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace AlexaSkillsKit.Speechlet

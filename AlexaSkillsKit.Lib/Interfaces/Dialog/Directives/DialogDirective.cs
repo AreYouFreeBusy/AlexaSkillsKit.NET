@@ -1,4 +1,6 @@
-﻿using AlexaSkillsKit.Slu;
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
+
+using AlexaSkillsKit.Slu;
 using AlexaSkillsKit.Speechlet;
 
 namespace AlexaSkillsKit.Interfaces.Dialog.Directives

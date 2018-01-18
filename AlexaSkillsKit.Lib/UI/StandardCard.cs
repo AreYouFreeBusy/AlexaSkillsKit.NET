@@ -1,4 +1,4 @@
-﻿//  Copyright 2016 Stefan Negritoiu (FreeBusy). See LICENSE file for more information.
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
 
 namespace AlexaSkillsKit.UI
 {

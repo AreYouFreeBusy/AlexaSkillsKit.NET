@@ -1,4 +1,6 @@
-﻿using AlexaSkillsKit.Interfaces.AudioPlayer;
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
+
+using AlexaSkillsKit.Interfaces.AudioPlayer;
 using Newtonsoft.Json.Linq;
 
 namespace AlexaSkillsKit.Speechlet

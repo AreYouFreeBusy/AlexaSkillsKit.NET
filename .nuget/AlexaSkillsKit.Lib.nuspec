@@ -4,7 +4,7 @@
     <id>AlexaSkillsKit.NET</id>
     <version>1.5.2</version>
     <title>AlexaSkillsKit.NET</title>
-    <authors>Stefan Negritoiu (FreeBusy)</authors>
+    <authors>Stefan Negritoiu (FreeBusy) and contributors</authors>
     <owners>Stefan Negritoiu (FreeBusy)</owners>
     <projectUrl>https://github.com/AreYouFreeBusy/AlexaSkillsKit.NET</projectUrl>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -19,7 +19,7 @@
 1.5.0: Fully implement certificate verification requirement and support for Standard cards
 1.5.2: reimplement request timestamp parsing to accept both ISO 8601 and Unix time formats  
     </releaseNotes>
-    <copyright>Copyright 2017 Stefan Negritoiu (FreeBusy) and contributors</copyright>
+    <copyright>Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors</copyright>
     <tags>amazon echo alexa speechlet</tags>
     <dependencies>
       <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
+
+using System.Collections.Generic;
 
 namespace AlexaSkillsKit.Interfaces.Display
 {
