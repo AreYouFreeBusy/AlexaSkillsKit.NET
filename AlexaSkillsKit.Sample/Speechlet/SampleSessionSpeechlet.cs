@@ -13,7 +13,7 @@ using AlexaSkillsKit.Interfaces.VideoApp.Directives;
 
 namespace Sample.Controllers
 {
-    public class SampleSessionSpeechlet : Speechlet
+    public class SampleSessionSpeechlet : SpeechletBase, ISpeechletWithContext
     {
         private static Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -22,18 +22,18 @@ namespace Sample.Controllers
         private const string NAME_SLOT = "Name";
 
 
-        public override void OnSessionStarted(SessionStartedRequest request, Session session) {            
+        public void OnSessionStarted(SessionStartedRequest request, Session session, Context context) {            
             Log.Info("OnSessionStarted requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }
 
 
-        public override SpeechletResponse OnLaunch(LaunchRequest request, Session session) {
+        public SpeechletResponse OnLaunch(LaunchRequest request, Session session, Context context) {
             Log.Info("OnLaunch requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
             return GetWelcomeResponse();
         }
 
 
-        public override SpeechletResponse OnIntent(IntentRequest request, Session session) {
+        public SpeechletResponse OnIntent(IntentRequest request, Session session, Context context) {
             Log.Info("OnIntent requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
 
             // Get intent from the request object.
@@ -54,7 +54,7 @@ namespace Sample.Controllers
         }
 
 
-        public override void OnSessionEnded(SessionEndedRequest request, Session session) {
+        public void OnSessionEnded(SessionEndedRequest request, Session session, Context context) {
             Log.Info("OnSessionEnded requestId={0}, sessionId={1}", request.RequestId, session.SessionId);
         }
 
