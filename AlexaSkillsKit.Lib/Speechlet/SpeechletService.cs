@@ -182,7 +182,13 @@ namespace AlexaSkillsKit.Speechlet
         }
 
 
-        private async Task<ISpeechletResponse> HandleStandardRequestAsync(SpeechletRequest request, Session session, Context context) {
+        /// <summary>
+        /// 
+        /// </summary>
+        private async Task<ISpeechletResponse> HandleStandardRequestAsync(
+            SpeechletRequest request, Session session, Context context) {
+            
+            #pragma warning disable 612, 618
             if (session != null) {
                 // Do session management prior to calling OnSessionStarted and OnIntentAsync 
                 // to allow dev to change session values if behavior is not desired
@@ -200,9 +206,11 @@ namespace AlexaSkillsKit.Speechlet
                         await (speechlet as ISpeechletAsync).OnSessionStartedAsync(sessionStartedRequest, session);
                 }
             }
+            #pragma warning restore 612, 618
 
-            // process launch request
+            #pragma warning disable 612, 618
             if (request is LaunchRequest) {
+                // process launch request
                 if (speechlet is ISpeechletWithContext)
                     return (speechlet as ISpeechletWithContext).OnLaunch(request as LaunchRequest, session, context);
                 else if (speechlet is ISpeechletWithContextAsync)
@@ -212,9 +220,8 @@ namespace AlexaSkillsKit.Speechlet
                 else if (speechlet is ISpeechletAsync)
                     return await (speechlet as ISpeechletAsync).OnLaunchAsync(request as LaunchRequest, session);
             }
-
-            // process intent request
             else if (request is IntentRequest) {
+                // process intent request
                 if (speechlet is ISpeechletWithContext)
                     return (speechlet as ISpeechletWithContext).OnIntent(request as IntentRequest, session, context);
                 else if (speechlet is ISpeechletWithContextAsync)
@@ -224,9 +231,8 @@ namespace AlexaSkillsKit.Speechlet
                 else if (speechlet is ISpeechletAsync)
                     return await (speechlet as ISpeechletAsync).OnIntentAsync(request as IntentRequest, session);
             }
-
-            // process session ended request
             else if (request is SessionEndedRequest) {
+                // process session ended request
                 if (speechlet is ISpeechletWithContext)
                     (speechlet as ISpeechletWithContext).OnSessionEnded(request as SessionEndedRequest, session, context);
                 else if (speechlet is ISpeechletWithContextAsync)
@@ -236,6 +242,7 @@ namespace AlexaSkillsKit.Speechlet
                 else if (speechlet is ISpeechletAsync)
                     await (speechlet as ISpeechletAsync).OnSessionEndedAsync(request as SessionEndedRequest, session);
             }
+            #pragma warning restore 612, 618
 
             return null;
         }
