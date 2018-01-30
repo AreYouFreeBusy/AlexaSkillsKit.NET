@@ -1,13 +1,18 @@
 ﻿// Copyright 2018 Stefan Negritoiu (FreeBusy) and contributors. See LICENSE file for more information.
 
-using Org.BouncyCastle.Security.Certificates;
-using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.Caching;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Security.Certificates;
 
 namespace AlexaSkillsKit.Authentication
 {
@@ -46,6 +51,31 @@ namespace AlexaSkillsKit.Authentication
         /// <summary>
         /// Verifies request signature and manages the caching of the signature certificate
         /// </summary>
+        public static bool VerifyRequestSignature(
+            byte[] serializedSpeechletRequest, string expectedSignature, string certChainUrl) {
+
+            string certCacheKey = _getCertCacheKey(certChainUrl);
+            X509Certificate cert = MemoryCache.Default.Get(certCacheKey) as X509Certificate;
+            if (cert == null ||
+                !CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert)) {
+
+                // download the cert 
+                // if we don't have it in cache or
+                // if we have it but it's stale because the current request was signed with a newer cert
+                // (signaled by signature check fail with cached cert)
+                cert = RetrieveAndVerifyCertificate(certChainUrl);
+                if (cert == null) return false;
+
+                MemoryCache.Default.Set(certCacheKey, cert, _policy);
+            }
+
+            return CheckRequestSignature(serializedSpeechletRequest, expectedSignature, cert);
+        }
+
+
+        /// <summary>
+        /// Verifies request signature and manages the caching of the signature certificate
+        /// </summary>
         public async static Task<bool> VerifyRequestSignatureAsync(
             byte[] serializedSpeechletRequest, string expectedSignature, string certChainUrl) {
 
@@ -69,17 +99,30 @@ namespace AlexaSkillsKit.Authentication
 
 
         /// <summary>
-        /// Requests specified url and returns response content
+        /// 
         /// </summary>
-        public async static Task<string> ReadContentFromUrlAsync(string url) {
+        public static X509Certificate RetrieveAndVerifyCertificate(string certChainUrl) {
+            // making requests to externally-supplied URLs is an open invitation to DoS
+            // so restrict host to an Alexa controlled subdomain/path
+            if (!VerifyCertificateUrl(certChainUrl)) return null;
+
+            var webClient = new WebClient();
+            var content = webClient.DownloadString(certChainUrl);
+
+            var pemReader = new Org.BouncyCastle.OpenSsl.PemReader(new StringReader(content));
+            var cert = (X509Certificate)pemReader.ReadObject();
             try {
-                var httpClient = new HttpClient();
-                var httpResponse = await httpClient.GetAsync(url);
-                return await httpResponse.Content.ReadAsStringAsync();
+                cert.CheckValidity();
+                if (!CheckCertSubjectNames(cert)) return null;
             }
-            catch (Exception) {
+            catch (CertificateExpiredException) {
                 return null;
             }
+            catch (CertificateNotYetValidException) {
+                return null;
+            }
+
+            return cert;
         }
 
 
@@ -91,13 +134,15 @@ namespace AlexaSkillsKit.Authentication
             // so restrict host to an Alexa controlled subdomain/path
             if (!VerifyCertificateUrl(certChainUrl)) return null;
 
-            var content = await ReadContentFromUrlAsync(certChainUrl);
+            var httpClient = new HttpClient();
+            var httpResponse = await httpClient.GetAsync(certChainUrl);
+            var content = await httpResponse.Content.ReadAsStringAsync();
             if (String.IsNullOrEmpty(content)) return null;
 
             var pemReader = new Org.BouncyCastle.OpenSsl.PemReader(new StringReader(content));
             var cert = (X509Certificate)pemReader.ReadObject();
             try {
-                cert.CheckValidity();
+                cert.CheckValidity(); 
                 if (!CheckCertSubjectNames(cert)) return null;
             }
             catch (CertificateExpiredException) {
@@ -128,7 +173,7 @@ namespace AlexaSkillsKit.Authentication
             var publicKey = (Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters)cert.GetPublicKey();
             var signer = Org.BouncyCastle.Security.SignerUtilities.GetSigner(Sdk.SIGNATURE_ALGORITHM);
             signer.Init(false, publicKey);
-            signer.BlockUpdate(serializedSpeechletRequest, 0, serializedSpeechletRequest.Length);
+            signer.BlockUpdate(serializedSpeechletRequest, 0, serializedSpeechletRequest.Length);            
 
             return signer.VerifySignature(expectedSig);
         }
@@ -140,7 +185,7 @@ namespace AlexaSkillsKit.Authentication
         private static bool CheckCertSubjectNames(X509Certificate cert) {
             bool found = false;
             ArrayList subjectNamesList = (ArrayList)cert.GetSubjectAlternativeNames();
-            for (int i = 0; i < subjectNamesList.Count; i++) {
+            for (int i=0; i < subjectNamesList.Count; i++) {
                 ArrayList subjectNames = (ArrayList)subjectNamesList[i];
                 for (int j = 0; j < subjectNames.Count; j++) {
                     if (subjectNames[j] is String && subjectNames[j].Equals(Sdk.ECHO_API_DOMAIN_NAME)) {
