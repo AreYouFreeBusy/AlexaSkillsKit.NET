@@ -1,0 +1,7 @@
+{
+    "functions": [ "AlexaHttpTrigger" ],
+    "http": {
+        "routePrefix": "",
+        "maxConcurrentRequests": 2
+    }
+}

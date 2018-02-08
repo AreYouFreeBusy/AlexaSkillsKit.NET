@@ -1,0 +1,10 @@
+{
+    "profiles": {
+        "AlexaSkillsKit.Sample.Dialog.AzureFunc": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "ApplicationId": "amzn1.ask.skill.NNN"
+            }
+        }
+    }
+}
