@@ -138,6 +138,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SampleIntent3HandlerTests.cs" />
+    <Compile Include="SampleIntent2HandlerTests.cs" />
     <Compile Include="TestsBase.cs" />
     <Compile Include="SampleIntent1HandlerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
