@@ -16,6 +16,7 @@ namespace AlexaSkillsKit.Speechlet
                 Application = Application.FromJson(json.Value<JObject>("application")),
                 User = User.FromJson(json.Value<JObject>("user")),
                 Device = Device.FromJson(json.Value<JObject>("device")),
+                Person = Person.FromJson(json.Value<JObject>("person")),
                 ApiEndpoint = json.Value<string>("apiEndpoint"),
                 ApiAccessToken = json.Value<string>("apiAccessToken")
             };
@@ -27,6 +28,11 @@ namespace AlexaSkillsKit.Speechlet
         }
 
         public User User {
+            get;
+            private set;
+        }
+
+        public Person Person {
             get;
             private set;
         }
