@@ -6,7 +6,7 @@
   <ItemGroup>    
     <PackageReference Include="AlexaSkillsKit.NET" Version="1.6.0" />    
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.7" />    
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
